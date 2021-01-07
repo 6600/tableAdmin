@@ -1,0 +1,32 @@
+<template lang="pug">
+.home
+  .title
+    span 数据总后台
+    span
+      a(href="#") 退出登录
+</template>
+
+<script>
+  module.exports = {
+
+  }
+</script>
+
+
+<style lang="less">
+.title {
+  background-color: #272f3e;
+  line-height: 45px;
+  color: white;
+  font-size: 18px;
+  padding: 0 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  a {
+    color: white;
+    font-size: 14px;
+  }
+}
+</style>
