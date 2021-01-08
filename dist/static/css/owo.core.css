@@ -297,3 +297,36 @@ li {
   font-size: 14px;
 }
 
+.home .tab-bar {
+  line-height: 34px;
+}
+
+.home .tab-bar .tab-bar-item {
+  background-color: papayawhip;
+  display: inline-block;
+  min-width: 60px;
+  padding: 0 10px;
+  border-radius: 5px 5px 0 0;
+  margin-right: 5px;
+  text-align: center;
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+.home .tab-bar .tab-bar-item.active {
+  color: white;
+  background-color: darkkhaki;
+}
+
+.home .conn {
+  width: 100%;
+  height: calc(100% - 88px);
+  overflow: auto;
+  background-color: floralwhite;
+}
+
+.home .tab-bar {
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+}
+

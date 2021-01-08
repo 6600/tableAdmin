@@ -4,11 +4,47 @@
     span 数据总后台
     span
       a(href="#") 退出登录
+  .tab-bar
+    .tab-bar-item.active 表格1
+    .tab-bar-item 表格2
+    .tab-bar-item 表格3
+    .tab-bar-item 表格4
+    .tab-bar-item +
+  .conn
 </template>
 
 <script>
   module.exports = {
-
+    created: function () {
+      const mockData = {
+        "初级": [0, 0, 0, 0, 0, 0],
+        "人保三级": [0, 0, 0, 0, 0, 0],
+        "人保四级": [0, 0, 0, 0, 0, 0],
+        "新版证书": [0, 0, 0, 0, 0, 0],
+        "河北保安员三级": [0, 0, 0, 0, 0, 0],
+        "安监员": [0, 0, 0, 0, 0, 0],
+      }
+      this.createdTable(mockData)
+    },
+    createdTable: function (data) {
+      let newHtml = '<table border="0"><tr>'
+      for (item in data) {
+        newHtml += `<th>${item}</th>`
+      }
+      newHtml += `</tr>`
+      for (let index = 0; index < 100; index++) {
+        newHtml += `<tr>`
+        for (item of Object.keys(data)) {
+          console.log(data[item][index])
+          const value = data[item][index] == undefined ? '' : data[item][index]
+          newHtml += `<td>${value}</td>`
+        }
+        newHtml += `<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>`
+        newHtml += `</tr>`
+      }
+      newHtml += `</table>`
+      this.query('.conn').innerHTML = newHtml
+    }
   }
 </script>
 
@@ -28,5 +64,33 @@
     color: white;
     font-size: 14px;
   }
+}
+.tab-bar {
+  line-height: 34px;
+  .tab-bar-item {
+    background-color: papayawhip;
+    display: inline-block;
+    min-width: 60px;
+    padding: 0 10px;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    text-align: center;
+    margin-top: 6px;
+    font-weight: bold;
+  }
+  .tab-bar-item.active {
+    color: white;
+    background-color: darkkhaki;
+  }
+}
+.conn {
+  width: 100%;
+  height: calc(100% - 88px);
+  overflow: auto;
+  background-color: floralwhite;
+}
+.tab-bar {
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
 }
 </style>
