@@ -3,6 +3,7 @@
   .title
     span 数据总后台
     span
+      a(href="#") 保存
       a(href="#") 退出登录
   .tab-bar
     .tab-bar-item.active 表格1
@@ -27,10 +28,11 @@
       this.createdTable(mockData)
     },
     createdTable: function (data) {
-      let newHtml = '<table border="0"><tr>'
+      let newHtml = '<table border="0" contenteditable="true"><tr>'
       for (item in data) {
         newHtml += `<th>${item}</th>`
       }
+      newHtml += `<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>`
       newHtml += `</tr>`
       for (let index = 0; index < 100; index++) {
         newHtml += `<tr>`
@@ -63,6 +65,7 @@
   a {
     color: white;
     font-size: 14px;
+    margin-left: 10px;
   }
 }
 .tab-bar {

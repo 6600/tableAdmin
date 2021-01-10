@@ -295,6 +295,7 @@ li {
 .home .title a {
   color: white;
   font-size: 14px;
+  margin-left: 10px;
 }
 
 .home .tab-bar {
