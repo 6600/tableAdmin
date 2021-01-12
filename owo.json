@@ -64,6 +64,11 @@
 			"name": "main",
 			"src": "./src/main.js",
 			"resource": true
+		},
+		{
+			"name": "toast",
+			"afterbody": true,
+			"src": "./owo_modules/toast.js"
 		}
 	],
 	"styleList": [
@@ -115,7 +120,7 @@
 			"merge": false,
 			"allAnimate": false,
 			"title": "苏州斯百特教育财务平台",
-			"handleLink": true,
+			"handleLink": false,
 			"scriptList": [
 				{
 					"name": "jquery1.11.0",

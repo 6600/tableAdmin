@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.s29s5nu11i.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.34ahd1oasrw.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -37,11 +37,11 @@
         </div>
         <div class="hellow-text">登录苏州斯百特教育财务平台</div>
         <div class="user-name-bar input-bar">
-          <img class="bar-icon" src="./static/resource/user.png">
+          <img class="bar-icon" src="https://cunchu.site/puge/login/user.png">
           <input type="text" o-value="this.data.username" placeholder="用户名">
         </div>
         <div class="pass-word-bar input-bar">
-          <img class="bar-icon" src="./static/resource/password.png">
+          <img class="bar-icon" src="https://cunchu.site/puge/login/password.png">
           <input type="password" o-value="this.data.password" placeholder="密码">
         </div>
         <div class="button-box">
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="view-register" route="register">
-        <img class="bg-1" src="./static/resource/art.png">
+        <img class="bg-1" src="https://cunchu.site/puge/login/art.png">
         <p>欢迎注册PUGE账号</p>
         <input class="register-input" type="text" o-value="this.data.registerusername" placeholder="用户名">
         <input class="register-input" type="password" o-value="this.data.registerPassWord" placeholder="密码">
@@ -73,37 +73,29 @@
     <div class="title">
       <span>数据总后台</span>
       <span>
-        <a href="#">保存</a>
         <a href="#">退出登录</a>
       </span>
     </div>
-    <div class="tab-bar">
-      <div class="tab-bar-item active">表格1</div>
-      <div class="tab-bar-item">表格2</div>
-      <div class="tab-bar-item">表格3</div>
-      <div class="tab-bar-item">表格4</div>
-      <div class="tab-bar-item">+</div>
+    <div class="tab-bar"></div>
+    <div class="conn">
+      <div class="table-box"></div>
     </div>
-    <div class="conn"></div>
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.s29s5nu11i.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.34ahd1oasrw.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
-    var appType = '苏州斯百特教育财务平台';
-    var userInfo = localStorage.getItem("owoUserInfo_" + appType);
-
-    if (userInfo) {
-      console.log(userInfo);
-      owo.state.userInfo = JSON.parse(userInfo);
-
-      if (typeof owo.state.userInfo.data == "string") {
-        if (owo.state.userInfo.data == '') owo.state.userInfo.data = {};
-        else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data);
-      } // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
-
-    }
+    var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
+    // if (userInfo) {
+    //   console.log(userInfo)
+    //   owo.state.userInfo = JSON.parse(userInfo)
+    //   if (typeof owo.state.userInfo.data == "string") {
+    //     if (owo.state.userInfo.data == '') owo.state.userInfo.data = {}
+    //     else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data)
+    //   }
+    //   // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
+    // }
 
     function getDataFormSession(username, session) {
       fetch("http://going.run/userServer?route=loginSession", {
@@ -123,8 +115,7 @@
 
         if (res.err === 0) {
           owo.tool.toast('登陆成功');
-          owo.state.userInfo = res.data;
-          localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data));
+          owo.state.userInfo = res.data; // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
 
           if (owo.event.login) {
             owo.event.login(res.data);
@@ -157,7 +148,12 @@
           owo.tool.toast("\u63D0\u4EA4\u5931\u8D25: " + res.message);
         }
       });
-    }
+    } // 模块 page 的script代码
+
+
+    owo.event.login = function() {
+      owo.script.page.createdTable(0);
+    };
 
     owo.script = {
       "login": {
@@ -167,8 +163,8 @@
           "registerPassWordR": "",
           "registerPhone": "",
           "registerCode": "",
-          "username": "",
-          "password": "",
+          "username": "puge",
+          "password": "mmit7750",
           "toast": null,
           "session": null
         },
@@ -195,8 +191,8 @@
             if (res.err === 0) {
               toast('登陆成功'); // do something
 
-              owo.state.userInfo = res.data;
-              localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data));
+              owo.state.userInfo = res.data; // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
+
               setTimeout(function() {
                 owo.go('page');
               }, 0);
@@ -288,51 +284,193 @@
         }
       },
       "page": {
-        "created": function created() {
-          var mockData = {
-            "初级": [0, 0, 0, 0, 0, 0],
-            "人保三级": [0, 0, 0, 0, 0, 0],
-            "人保四级": [0, 0, 0, 0, 0, 0],
-            "新版证书": [0, 0, 0, 0, 0, 0],
-            "河北保安员三级": [0, 0, 0, 0, 0, 0],
-            "安监员": [0, 0, 0, 0, 0, 0]
-          };
-          this.createdTable(mockData);
+        "data": {
+          "activeIndex": 0,
+          "mockData": [{
+            "name": "表格1",
+            "data": [{
+              "name": "初级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保四级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "新版证书",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "河北保安员三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "安监员",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          }, {
+            "name": "表格2",
+            "data": [{
+              "name": "初级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保三级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保四级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "新版证书",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "河北保安员三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "安监员",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          }]
         },
-        "createdTable": function createdTable(data) {
-          var newHtml = '<table border="0" contenteditable="true"><tr>';
+        "show": function show() {
+          var _this = this;
 
-          for (item in data) {
-            newHtml += "<th>" + item + "</th>";
+          if (!owo.state.userInfo) {
+            setTimeout(function() {
+              owo.go('login');
+            }, 100);
+            return;
           }
 
-          newHtml += "<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>";
-          newHtml += "</tr>";
+          setTimeout(function() {
+            _this.createdTab(owo.state.userInfo.data);
+          }, 100);
+        },
+        "createdTab": function createdTab(data) {
+          var _this2 = this;
 
-          for (var index = 0; index < 100; index++) {
+          var tabHTML = "";
+          var ind = 0;
+          data.forEach(function(element) {
+            tabHTML += "<div class=\"tab-bar-item\" contenteditable=\"true\" o-mouseout=\"saveTab(" + ind + ")\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
+            ind++;
+          });
+          tabHTML += "<div class=\"tab-bar-item\" o-tap=\"addTable\">+</div>";
+          this.query('.tab-bar').innerHTML = tabHTML;
+          this.createdTable(0);
+          setTimeout(function() {
+            _this2.handleEvent(_this2, _this2.query('.tab-bar'));
+          }, 100);
+        },
+        "createdTable": function createdTable(ind) {
+          var _this3 = this;
+
+          this.data.activeIndex = ind;
+          ind = parseInt(ind);
+          var data = owo.state.userInfo.data[ind].data;
+          this.queryAll('.tab-bar-item').forEach(function(element) {
+            element.classList.remove('active');
+          });
+          this.queryAll('.tab-bar-item')[ind].classList.add('active');
+          var newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>';
+          data.forEach(function(item) {
+            newHtml += "<th>" + item.name + "</th>";
+          });
+          newHtml += "</tr>"; // 获取最大的表项
+
+          console.log(data);
+          var lineNumber = data.length;
+          var rowNumber = 0;
+          data.forEach(function(element) {
+            if (element.value.length > rowNumber) rowNumber = element.value.length;
+          });
+
+          for (var index = 0; index < rowNumber; index++) {
+            var temp = data[index] ? data[index].value : [];
             newHtml += "<tr>";
 
-            for (var _i = 0, _Object$keys = Object.keys(data); _i < _Object$keys.length; _i++) {
-              item = _Object$keys[_i];
-              console.log(data[item][index]);
-              var value = data[item][index] == undefined ? '' : data[item][index];
-              newHtml += "<td>" + value + "</td>";
+            for (var index2 = 0; index2 < lineNumber; index2++) {
+              var element = temp[index];
+              var value = data[index2].value[index] == undefined ? '' : data[index2].value[index];
+              newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + index + ")\">" + value + "</td>";
             }
 
-            newHtml += "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
             newHtml += "</tr>";
           }
 
           newHtml += "</table>";
-          this.query('.conn').innerHTML = newHtml;
+          this.query('.table-box').innerHTML = newHtml;
+          setTimeout(function() {
+            _this3.handleEvent(_this3, _this3.query('.table-box'));
+          }, 100);
+        },
+        "saveData": function saveData(key, name, index) {
+          owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
+          this.saveUserInfo();
+        },
+        "saveUserInfo": function saveUserInfo() {
+          fetch("http://going.run/userServer?route=updata", {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username: owo.state.userInfo.username,
+              session: owo.state.userInfo.session,
+              type: '苏州斯百特教育财务平台',
+              value: owo.state.userInfo.data
+            })
+          }).then(function(response) {
+            return response.json();
+          }).then(function(res) {
+            if (res.err === 0) {
+              owo.tool.toast('保存成功!');
+            } else {
+              owo.tool.toast("\u63D0\u4EA4\u5931\u8D25: " + res.message);
+            }
+          });
+        },
+        "addline": function addline() {
+          var temp = owo.state.userInfo.data[this.data.activeIndex];
+          temp.data.push({
+            "name": "新增项",
+            "value": Array(temp.row)
+          }); // console.log(owo.state.userInfo.data[this.data.activeIndex])
+
+          this.createdTable(this.data.activeIndex);
+        },
+        "addline2": function addline2() {
+          var temp = owo.state.userInfo.data[this.data.activeIndex].data;
+          console.log(owo.state.userInfo.data[this.data.activeIndex]);
+          temp[0].value.push('');
+          this.createdTable(this.data.activeIndex);
+        },
+        "saveTab": function saveTab(ind) {
+          owo.state.userInfo.data[ind].name = this.$target.innerText;
+          this.createdTable(this.data.activeIndex);
+        },
+        "addTable": function addTable() {
+          owo.state.userInfo.data.push({
+            name: "新建表格",
+            data: [{
+              "name": "表项1",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项3",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          });
+          this.createdTab(owo.state.userInfo.data);
         }
       }
     };
   </script>
 
   <script src="./static/js/main.js" type="text/javascript" charset="UTF-8"></script>
-  <script src="./static/js/jquery-1.11.1.min.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="https://cunchu.site/owo/script/jquery-1.11.1.min.js" type="text/javascript" charset="UTF-8"></script>
 
+  <script src="./static/js/toast.js" type="text/javascript" charset="UTF-8"></script>
 </body>
 
 </html>

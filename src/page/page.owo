@@ -3,49 +3,157 @@
   .title
     span 数据总后台
     span
-      a(href="#") 保存
+      //- a(href="#") 保存
       a(href="#") 退出登录
   .tab-bar
-    .tab-bar-item.active 表格1
-    .tab-bar-item 表格2
-    .tab-bar-item 表格3
-    .tab-bar-item 表格4
-    .tab-bar-item +
   .conn
+    .table-box
 </template>
 
 <script>
+  owo.event.login = function () {
+    owo.script.page.createdTable(0)
+  }
   module.exports = {
-    created: function () {
-      const mockData = {
-        "初级": [0, 0, 0, 0, 0, 0],
-        "人保三级": [0, 0, 0, 0, 0, 0],
-        "人保四级": [0, 0, 0, 0, 0, 0],
-        "新版证书": [0, 0, 0, 0, 0, 0],
-        "河北保安员三级": [0, 0, 0, 0, 0, 0],
-        "安监员": [0, 0, 0, 0, 0, 0],
-      }
-      this.createdTable(mockData)
-    },
-    createdTable: function (data) {
-      let newHtml = '<table border="0" contenteditable="true"><tr>'
-      for (item in data) {
-        newHtml += `<th>${item}</th>`
-      }
-      newHtml += `<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>`
-      newHtml += `</tr>`
-      for (let index = 0; index < 100; index++) {
-        newHtml += `<tr>`
-        for (item of Object.keys(data)) {
-          console.log(data[item][index])
-          const value = data[item][index] == undefined ? '' : data[item][index]
-          newHtml += `<td>${value}</td>`
+    data: {
+      activeIndex: 0,
+      mockData: [
+        {
+          name: "表格1",
+          data: [
+            {"name": "初级", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "人保三级", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "人保四级", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "新版证书", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "河北保安员三级", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "安监员", "value": [0, 0, 0, 0, 0, 0]}
+          ]
+        },
+        {
+          name: "表格2",
+          data: [
+            {"name": "初级2", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "人保三级2", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "人保四级2", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "新版证书", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "河北保安员三级", "value": [0, 0, 0, 0, 0, 0]},
+            {"name": "安监员", "value": [0, 0, 0, 0, 0, 0]}
+          ]
         }
-        newHtml += `<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>`
+      ]
+    },
+    show: function () {
+      if (!owo.state.userInfo) {
+        setTimeout(() => {
+          owo.go('login')
+        }, 100);
+        return
+      }
+      setTimeout(() => {
+        this.createdTab(owo.state.userInfo.data)
+      }, 100);
+    },
+    createdTab: function (data) {
+      let tabHTML = ``
+      let ind = 0
+      data.forEach(element => {
+        tabHTML += `<div class="tab-bar-item" contenteditable="true" o-mouseout="saveTab(${ind})" o-tap="createdTable(${ind})">${element.name}</div>`
+        ind++
+      })
+      tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
+      this.query('.tab-bar').innerHTML = tabHTML
+      this.createdTable(0)
+      setTimeout(() => {
+        this.handleEvent(this, this.query('.tab-bar'))
+      }, 100);
+    },
+    createdTable: function (ind) {
+      this.data.activeIndex = ind
+      ind = parseInt(ind)
+      let data = owo.state.userInfo.data[ind].data
+      this.queryAll('.tab-bar-item').forEach(element => {
+        element.classList.remove('active')
+      });
+      this.queryAll('.tab-bar-item')[ind].classList.add('active')
+      let newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>'
+      data.forEach(item => {
+        newHtml += `<th>${item.name}</th>`
+      });
+      newHtml += `</tr>`
+
+      // 获取最大的表项
+      console.log(data)
+      let lineNumber = data.length
+      let rowNumber = 0
+      data.forEach(element => {
+        if (element.value.length > rowNumber) rowNumber = element.value.length
+      });
+      for (let index = 0; index < rowNumber; index++) {
+        let temp = data[index] ? data[index].value : []
+        newHtml += `<tr>`
+        for (let index2 = 0; index2 < lineNumber; index2++) {
+          const element = temp[index];
+          const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
+          newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
+        }
         newHtml += `</tr>`
       }
       newHtml += `</table>`
-      this.query('.conn').innerHTML = newHtml
+      this.query('.table-box').innerHTML = newHtml
+      setTimeout(() => {
+        this.handleEvent(this, this.query('.table-box'))
+      }, 100);
+    },
+    saveData: function (key, name, index) {
+      owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText
+      this.saveUserInfo()
+    },
+    saveUserInfo: function () {
+      fetch(`http://going.run/userServer?route=updata`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: owo.state.userInfo.username,
+          session: owo.state.userInfo.session,
+          type: '苏州斯百特教育财务平台',
+          value: owo.state.userInfo.data
+        })
+      }).then((response) => {return response.json();}).then((res) => {
+        if (res.err === 0) {
+          owo.tool.toast('保存成功!')
+        } else {
+          owo.tool.toast(`提交失败: ${res.message}`)
+        }
+      })
+    },
+    addline: function () {
+      let temp = owo.state.userInfo.data[this.data.activeIndex]
+      temp.data.push({"name": "新增项", "value": Array(temp.row)})
+      // console.log(owo.state.userInfo.data[this.data.activeIndex])
+      this.createdTable(this.data.activeIndex)
+    },
+    addline2: function () {
+      let temp = owo.state.userInfo.data[this.data.activeIndex].data
+      console.log(owo.state.userInfo.data[this.data.activeIndex])
+      temp[0].value.push('')
+      this.createdTable(this.data.activeIndex)
+    },
+    saveTab: function (ind) {
+      owo.state.userInfo.data[ind].name = this.$target.innerText
+      this.createdTable(this.data.activeIndex)
+    },
+    addTable: function () {
+      owo.state.userInfo.data.push({
+        name: "新建表格",
+        data: [
+          {"name": "表项1", "value": [0, 0, 0, 0, 0, 0]},
+          {"name": "表项2", "value": [0, 0, 0, 0, 0, 0]},
+          {"name": "表项3", "value": [0, 0, 0, 0, 0, 0]}
+        ]
+      })
+      this.createdTab(owo.state.userInfo.data)
     }
   }
 </script>
@@ -80,6 +188,7 @@
     text-align: center;
     margin-top: 6px;
     font-weight: bold;
+    cursor: pointer;
   }
   .tab-bar-item.active {
     color: white;
@@ -95,5 +204,29 @@
 .tab-bar {
   border-bottom: 1px solid #ccc;
   box-sizing: border-box;
+}
+.add-line {
+  position: absolute;
+  right: -60px;
+}
+.table-box {
+  display: inline-block;
+  position: relative;
+}
+.add-line {
+  width: 40px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.add-line2 {
+  width: 40px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  position: absolute;
+  bottom: -60px;
+  cursor: pointer;
 }
 </style>

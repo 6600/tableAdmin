@@ -312,6 +312,7 @@ li {
   text-align: center;
   margin-top: 6px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .home .tab-bar .tab-bar-item.active {
@@ -329,5 +330,33 @@ li {
 .home .tab-bar {
   border-bottom: 1px solid #ccc;
   box-sizing: border-box;
+}
+
+.home .add-line {
+  position: absolute;
+  right: -60px;
+}
+
+.home .table-box {
+  display: inline-block;
+  position: relative;
+}
+
+.home .add-line {
+  width: 40px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: pointer;
+}
+
+.home .add-line2 {
+  width: 40px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  position: absolute;
+  bottom: -60px;
+  cursor: pointer;
 }
 

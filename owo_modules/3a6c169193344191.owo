@@ -33,22 +33,20 @@
 
 <script>
   var appType = '苏州斯百特教育财务平台'
-  var userInfo = localStorage.getItem("owoUserInfo_" + appType)
-  if (userInfo) {
-    console.log(userInfo)
-    owo.state.userInfo = JSON.parse(userInfo)
-    if (typeof owo.state.userInfo.data == "string") {
-      if (owo.state.userInfo.data == '') owo.state.userInfo.data = {}
-      else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data)
-    }
-    // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
-  }
+  // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
+  // if (userInfo) {
+  //   console.log(userInfo)
+  //   owo.state.userInfo = JSON.parse(userInfo)
+  //   if (typeof owo.state.userInfo.data == "string") {
+  //     if (owo.state.userInfo.data == '') owo.state.userInfo.data = {}
+  //     else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data)
+  //   }
+  //   // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
+  // }
   function getDataFormSession (username, session) {
     fetch(`http://going.run/userServer?route=loginSession`, {
       method: 'POST',
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         type: appType,
         username: username,
@@ -59,7 +57,7 @@
       if (res.err === 0) {
         owo.tool.toast('登陆成功')
         owo.state.userInfo = res.data
-        localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
+        // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
         if (owo.event.login) {
           owo.event.login(res.data)
         }
@@ -76,7 +74,7 @@
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        username:owo.state.userInfo.username,
+        username: owo.state.userInfo.username,
         session: owo.state.userInfo.session,
         type: appType,
         value: userData
@@ -97,8 +95,8 @@
       registerPassWordR: "",
       registerPhone: "",
       registerCode: "",
-      username: "",
-      password: "",
+      username: "puge",
+      password: "mmit7750",
       toast: null,
       session: null
     },
@@ -124,7 +122,7 @@
           // do something
           
           owo.state.userInfo = res.data
-          localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
+          // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
           setTimeout(() => {
             owo.go('page')
           }, 0);
