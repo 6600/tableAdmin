@@ -1,0 +1,107 @@
+<template lang="pug">
+.user
+  .title
+    span 后台管理
+    span
+      a(href="#page") 表格查看
+      a(href="#") 退出登录
+  .conn
+    h3 权限管理
+    .table-box
+    h3 密码管理
+    .password-box
+      .password-item(o-for="owo.state.userInfo.sub")
+        .title-item 用户名: {key}
+        .title-item 密码
+        input.pass-input(type="text" value="{value.password}" onchange="changePW('{key}', event)")
+</template>
+<script>
+function changeP(name, event) {
+  const isChecked = event.target.checked
+  const powerName = event.target.value
+  if (isChecked) {
+    owo.state.userInfo.sub[name].power[powerName] = true
+  } else {
+    owo.state.userInfo.sub[name].power[powerName] = false
+  }
+  console.log(owo.state.userInfo.sub)
+  saveUserSub(owo.state.userInfo.sub)
+}
+function changePW(name, event) {
+  owo.state.userInfo.sub[name].password = event.target.value
+  console.log(owo.state.userInfo.sub)
+  saveUserSub(owo.state.userInfo.sub)
+}
+module.exports = {
+  show: function () {
+    if (!owo.state.userInfo) {
+      setTimeout(() => {
+        owo.go('login')
+      }, 100);
+      return
+    }
+    setTimeout(() => {
+      let newHtml = '<table border="0"><tr><th></th>'
+      console.log(owo.state.userInfo.data)
+      owo.state.userInfo.data.forEach(item => {
+        newHtml += `<th>${item.name}</th>`
+      });
+      newHtml += `</tr>`
+      const sub = owo.state.userInfo.sub
+      for (const key in sub) {
+        if (Object.hasOwnProperty.call(sub, key)) {
+          const element = sub[key];
+          newHtml += `<tr><th>${key}</th>`
+          owo.state.userInfo.data.forEach(item => {
+            if (element.power[item.name]) {
+              newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}" checked="true"/></th>`
+            } else {
+              newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}"/></th>`
+            }
+            
+          });
+          newHtml += `</tr>` 
+        }
+      }
+      newHtml += `</table>`
+      this.query('.table-box').innerHTML = newHtml
+    }, 100);
+    
+  }
+}
+</script>
+<style lang="less">
+.title {
+  background-color: #272f3e;
+  line-height: 45px;
+  color: white;
+  font-size: 18px;
+  padding: 0 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  a {
+    color: white;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+}
+h3 {
+  line-height: 45px;
+  font-size: 20px;
+  background-color: blanchedalmond;
+  padding: 0 10px;
+}
+.title-item {
+  line-height: 30px;
+  background-color: beige;
+  padding: 0 10px;
+  font-size: 16px;
+}
+.pass-input {
+  width: 300px;
+  line-height: 30px;
+  margin: 0 10px;
+}
+</style>

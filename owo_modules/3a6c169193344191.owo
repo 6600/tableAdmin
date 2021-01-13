@@ -95,8 +95,8 @@
       registerPassWordR: "",
       registerPhone: "",
       registerCode: "",
-      username: "puge",
-      password: "mmit7750",
+      username: "test",
+      password: "Gsyugj85eoAebnzN",
       toast: null,
       session: null
     },
@@ -105,14 +105,19 @@
       else toast = alert
     },
     login: function () {
-      fetch(`http://going.run/userServer?route=login`, {
+      let getUrl = `http://going.run/userServer?route=login`
+      if (this.data.username !== 'test') {
+        getUrl = `http://going.run/userServer?route=loginSub`
+      }
+      fetch(getUrl, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           type: appType,
-          username: this.data.username,
+          username: 'test',
+          subname: this.data.username,
           password: this.data.password
         })
       }).then((response) => {return response.json();}).then((res) => {

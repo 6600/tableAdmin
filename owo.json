@@ -88,6 +88,11 @@
 			"name": "page",
 			"src": "./src/page/page.owo",
 			"type": "page"
+		},
+		{
+			"name": "user",
+			"src": "/src/page/user.owo",
+			"type": "page"
 		}
 	],
 	"mode": {

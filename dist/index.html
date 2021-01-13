@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.34ahd1oasrw.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.f3okfmpl80d.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -71,8 +71,9 @@
   <!-- 页面[page]-->
   <div class="home page" template="page" style="display: none;">
     <div class="title">
-      <span>数据总后台</span>
+      <span>用户管理</span>
       <span>
+        <a class="admin" href="#user" style="display: none;">后台管理</a>
         <a href="#">退出登录</a>
       </span>
     </div>
@@ -81,9 +82,31 @@
       <div class="table-box"></div>
     </div>
   </div>
+  <!-- 页面[user]-->
+  <div class="user page" template="user" style="display: none;">
+    <div class="title">
+      <span>后台管理</span>
+      <span>
+        <a href="#page">表格查看</a>
+        <a href="#">退出登录</a>
+      </span>
+    </div>
+    <div class="conn">
+      <h3>权限管理</h3>
+      <div class="table-box"></div>
+      <h3>密码管理</h3>
+      <div class="password-box">
+        <div class="password-item" o-for="owo.state.userInfo.sub">
+          <div class="title-item">用户名: {key}</div>
+          <div class="title-item">密码</div>
+          <input class="pass-input" type="text" value="{value.password}" onchange="changePW('{key}', event)">
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.34ahd1oasrw.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.f3okfmpl80d.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -153,7 +176,28 @@
 
     owo.event.login = function() {
       owo.script.page.createdTable(0);
-    };
+    }; // 模块 user 的script代码
+
+
+    function changeP(name, event) {
+      var isChecked = event.target.checked;
+      var powerName = event.target.value;
+
+      if (isChecked) {
+        owo.state.userInfo.sub[name].power[powerName] = true;
+      } else {
+        owo.state.userInfo.sub[name].power[powerName] = false;
+      }
+
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
+
+    function changePW(name, event) {
+      owo.state.userInfo.sub[name].password = event.target.value;
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
 
     owo.script = {
       "login": {
@@ -163,8 +207,8 @@
           "registerPassWordR": "",
           "registerPhone": "",
           "registerCode": "",
-          "username": "puge",
-          "password": "mmit7750",
+          "username": "test",
+          "password": "Gsyugj85eoAebnzN",
           "toast": null,
           "session": null
         },
@@ -173,14 +217,21 @@
           else toast = alert;
         },
         "login": function login() {
-          fetch("http://going.run/userServer?route=login", {
+          var getUrl = "http://going.run/userServer?route=login";
+
+          if (this.data.username !== 'test') {
+            getUrl = "http://going.run/userServer?route=loginSub";
+          }
+
+          fetch(getUrl, {
             method: 'POST',
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
               type: appType,
-              username: this.data.username,
+              username: 'test',
+              subname: this.data.username,
               password: this.data.password
             })
           }).then(function(response) {
@@ -328,7 +379,8 @@
               "name": "安监员",
               "value": [0, 0, 0, 0, 0, 0]
             }]
-          }]
+          }],
+          "timer": null
         },
         "show": function show() {
           var _this = this;
@@ -338,6 +390,12 @@
               owo.go('login');
             }, 100);
             return;
+          }
+
+          if (owo.state.userInfo.username == 'test') {
+            this.query('.admin').style.display = 'inline';
+          } else {
+            this.query('.admin').style.display = 'none';
           }
 
           setTimeout(function() {
@@ -352,8 +410,8 @@
           data.forEach(function(element) {
             tabHTML += "<div class=\"tab-bar-item\" contenteditable=\"true\" o-mouseout=\"saveTab(" + ind + ")\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
             ind++;
-          });
-          tabHTML += "<div class=\"tab-bar-item\" o-tap=\"addTable\">+</div>";
+          }); // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
+
           this.query('.tab-bar').innerHTML = tabHTML;
           this.createdTable(0);
           setTimeout(function() {
@@ -403,8 +461,10 @@
           }, 100);
         },
         "saveData": function saveData(key, name, index) {
-          owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
-          this.saveUserInfo();
+          if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
+            owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
+            this.saveUserInfo();
+          }
         },
         "saveUserInfo": function saveUserInfo() {
           fetch("http://going.run/userServer?route=updata", {
@@ -462,6 +522,78 @@
             }]
           });
           this.createdTab(owo.state.userInfo.data);
+        },
+        "stopAutoGet": function stopAutoGet() {
+          window.clearInterval(this.data.timer);
+        },
+        "startAutoGet": function startAutoGet() {
+          window.clearInterval(this.data.timer);
+          this.data.timer = setInterval(function() {
+            fetch("http://going.run/userServer?route=loginSession", {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                type: appType,
+                username: owo.state.userInfo.username,
+                session: owo.state.userInfo.session
+              })
+            }).then(function(response) {
+              return response.json();
+            }).then(function(res) {
+              console.log(res);
+
+              if (res.err === 0) {} else {
+                owo.go('login');
+                owo.tool.toast(res.message);
+              }
+            });
+          }, 5000);
+        }
+      },
+      "user": {
+        "show": function show() {
+          var _this4 = this;
+
+          if (!owo.state.userInfo) {
+            setTimeout(function() {
+              owo.go('login');
+            }, 100);
+            return;
+          }
+
+          setTimeout(function() {
+            var newHtml = '<table border="0"><tr><th></th>';
+            console.log(owo.state.userInfo.data);
+            owo.state.userInfo.data.forEach(function(item) {
+              newHtml += "<th>" + item.name + "</th>";
+            });
+            newHtml += "</tr>";
+            var sub = owo.state.userInfo.sub;
+
+            var _loop = function _loop(key) {
+              if (Object.hasOwnProperty.call(sub, key)) {
+                var element = sub[key];
+                newHtml += "<tr><th>" + key + "</th>";
+                owo.state.userInfo.data.forEach(function(item) {
+                  if (element.power[item.name]) {
+                    newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\" checked=\"true\"/></th>";
+                  } else {
+                    newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\"/></th>";
+                  }
+                });
+                newHtml += "</tr>";
+              }
+            };
+
+            for (var key in sub) {
+              _loop(key);
+            }
+
+            newHtml += "</table>";
+            _this4.query('.table-box').innerHTML = newHtml;
+          }, 100);
         }
       }
     };

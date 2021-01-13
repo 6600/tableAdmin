@@ -1,9 +1,9 @@
 <template lang="pug">
 .home
   .title
-    span 数据总后台
+    span 用户管理
     span
-      //- a(href="#") 保存
+      a.admin(href="#user" style="display: none;") 后台管理
       a(href="#") 退出登录
   .tab-bar
   .conn
@@ -40,7 +40,8 @@
             {"name": "安监员", "value": [0, 0, 0, 0, 0, 0]}
           ]
         }
-      ]
+      ],
+      timer: null
     },
     show: function () {
       if (!owo.state.userInfo) {
@@ -48,6 +49,11 @@
           owo.go('login')
         }, 100);
         return
+      }
+      if (owo.state.userInfo.username == 'test') {
+        this.query('.admin').style.display = 'inline'
+      } else {
+        this.query('.admin').style.display = 'none'
       }
       setTimeout(() => {
         this.createdTab(owo.state.userInfo.data)
@@ -60,7 +66,7 @@
         tabHTML += `<div class="tab-bar-item" contenteditable="true" o-mouseout="saveTab(${ind})" o-tap="createdTable(${ind})">${element.name}</div>`
         ind++
       })
-      tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
+      // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
       this.query('.tab-bar').innerHTML = tabHTML
       this.createdTable(0)
       setTimeout(() => {
@@ -75,7 +81,7 @@
         element.classList.remove('active')
       });
       this.queryAll('.tab-bar-item')[ind].classList.add('active')
-      let newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>'
+      let newHtml = '<img class="add-line" o-tap="addline" src="@|add.svg|"><img class="add-line2" o-tap="addline2" src="@|add.svg|"><table border="0" contenteditable="true"><tr>'
       data.forEach(item => {
         newHtml += `<th>${item.name}</th>`
       });
@@ -105,8 +111,10 @@
       }, 100);
     },
     saveData: function (key, name, index) {
-      owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText
-      this.saveUserInfo()
+      if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
+        owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText
+        this.saveUserInfo()
+      }
     },
     saveUserInfo: function () {
       fetch(`http://going.run/userServer?route=updata`, {
@@ -154,6 +162,30 @@
         ]
       })
       this.createdTab(owo.state.userInfo.data)
+    },
+    stopAutoGet: function () {
+      window.clearInterval(this.data.timer)
+    },
+    startAutoGet: function () {
+      window.clearInterval(this.data.timer)
+      this.data.timer = setInterval(() => {
+        fetch(`http://going.run/userServer?route=loginSession`, {
+          method: 'POST',
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            type: appType,
+            username: owo.state.userInfo.username,
+            session: owo.state.userInfo.session
+          })
+        }).then((response) => {return response.json();}).then((res) => {
+          console.log(res)
+          if (res.err === 0) {
+          } else {
+            owo.go('login')
+            owo.tool.toast(res.message)
+          }
+        })
+      }, 5000)
     }
   }
 </script>

@@ -359,4 +359,41 @@ li {
   bottom: -60px;
   cursor: pointer;
 }
+.user .title {
+  background-color: #272f3e;
+  line-height: 45px;
+  color: white;
+  font-size: 18px;
+  padding: 0 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user .title a {
+  color: white;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.user h3 {
+  line-height: 45px;
+  font-size: 20px;
+  background-color: blanchedalmond;
+  padding: 0 10px;
+}
+
+.user .title-item {
+  line-height: 30px;
+  background-color: beige;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+.user .pass-input {
+  width: 300px;
+  line-height: 30px;
+  margin: 0 10px;
+}
 
