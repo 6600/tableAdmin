@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.f3okfmpl80d.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.68cujg73nmn.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -96,17 +96,49 @@
       <div class="table-box"></div>
       <h3>密码管理</h3>
       <div class="password-box">
-        <div class="password-item" o-for="owo.state.userInfo.sub">
-          <div class="title-item">用户名: {key}</div>
-          <div class="title-item">密码</div>
-          <input class="pass-input" type="text" value="{value.password}" onchange="changePW('{key}', event)">
+        <div class="password-item">
+          <table border="0">
+            <tbody>
+              <tr>
+                <th>用户名</th>
+                <th>密码</th>
+              </tr>
+              <tr o-for="owo.state.userInfo.sub">
+                <th>
+                  <input class="pass-input" type="text" value="{key}" onchange="changePN('{key}', event)">
+                </th>
+                <th>
+                  <input class="pass-input" type="text" value="{value.password}" onchange="changePW('{key}', event)">
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <h3>表格管理</h3>
+      <div class="table-box-2">
+        <table border="0">
+          <tbody>
+            <tr o-for="owo.state.userInfo.data">
+              <th>
+                <input class="pass-input" type="text" value="{value.name}" onchange="owo.state.userInfo.data[{key}].name = event.target.value">
+              </th>
+              <th>
+                <span o-tap="deleteTable('{key}')">删除表格</span>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+        <div class="button-box">
+          <div class="button" o-tap="saveUserInfo()">保存设置</div>
+          <div class="button" o-tap="addTable">添加表格</div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.f3okfmpl80d.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.68cujg73nmn.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -148,29 +180,6 @@
           owo.tool.toast(res.message);
         }
       });
-    }
-
-    function saveUserInfo(userData) {
-      fetch("http://going.run/userServer?route=updata", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: owo.state.userInfo.username,
-          session: owo.state.userInfo.session,
-          type: appType,
-          value: userData
-        })
-      }).then(function(response) {
-        return response.json();
-      }).then(function(res) {
-        if (res.err === 0) {
-          owo.tool.toast('提交成功!');
-        } else {
-          owo.tool.toast("\u63D0\u4EA4\u5931\u8D25: " + res.message);
-        }
-      });
     } // 模块 page 的script代码
 
 
@@ -195,6 +204,13 @@
 
     function changePW(name, event) {
       owo.state.userInfo.sub[name].password = event.target.value;
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
+
+    function changePN(name, event) {
+      owo.state.userInfo.sub[event.target.value] = owo.state.userInfo.sub[name];
+      delete owo.state.userInfo.sub[name];
       console.log(owo.state.userInfo.sub);
       saveUserSub(owo.state.userInfo.sub);
     }
@@ -408,7 +424,10 @@
           var tabHTML = "";
           var ind = 0;
           data.forEach(function(element) {
-            tabHTML += "<div class=\"tab-bar-item\" contenteditable=\"true\" o-mouseout=\"saveTab(" + ind + ")\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
+            if (element) {
+              tabHTML += "<div class=\"tab-bar-item\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
+            }
+
             ind++;
           }); // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
 
@@ -463,30 +482,8 @@
         "saveData": function saveData(key, name, index) {
           if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
             owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
-            this.saveUserInfo();
+            saveUserInfo();
           }
-        },
-        "saveUserInfo": function saveUserInfo() {
-          fetch("http://going.run/userServer?route=updata", {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              username: owo.state.userInfo.username,
-              session: owo.state.userInfo.session,
-              type: '苏州斯百特教育财务平台',
-              value: owo.state.userInfo.data
-            })
-          }).then(function(response) {
-            return response.json();
-          }).then(function(res) {
-            if (res.err === 0) {
-              owo.tool.toast('保存成功!');
-            } else {
-              owo.tool.toast("\u63D0\u4EA4\u5931\u8D25: " + res.message);
-            }
-          });
         },
         "addline": function addline() {
           var temp = owo.state.userInfo.data[this.data.activeIndex];
@@ -567,7 +564,9 @@
             var newHtml = '<table border="0"><tr><th></th>';
             console.log(owo.state.userInfo.data);
             owo.state.userInfo.data.forEach(function(item) {
-              newHtml += "<th>" + item.name + "</th>";
+              if (item) {
+                newHtml += "<th>" + item.name + "</th>";
+              }
             });
             newHtml += "</tr>";
             var sub = owo.state.userInfo.sub;
@@ -577,10 +576,12 @@
                 var element = sub[key];
                 newHtml += "<tr><th>" + key + "</th>";
                 owo.state.userInfo.data.forEach(function(item) {
-                  if (element.power[item.name]) {
-                    newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\" checked=\"true\"/></th>";
-                  } else {
-                    newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\"/></th>";
+                  if (item) {
+                    if (element.power[item.name]) {
+                      newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\" checked=\"true\"/></th>";
+                    } else {
+                      newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\"/></th>";
+                    }
                   }
                 });
                 newHtml += "</tr>";
@@ -593,6 +594,36 @@
 
             newHtml += "</table>";
             _this4.query('.table-box').innerHTML = newHtml;
+          }, 100);
+        },
+        "addTable": function addTable() {
+          var _this5 = this;
+
+          owo.state.userInfo.data.push({
+            name: "新建表格",
+            data: [{
+              "name": "表项1",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项3",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          });
+          saveUserInfo();
+          setTimeout(function() {
+            _this5.show();
+          }, 100);
+        },
+        "deleteTable": function deleteTable(key) {
+          var _this6 = this;
+
+          delete owo.state.userInfo.data[key];
+          saveUserInfo();
+          setTimeout(function() {
+            _this6.show();
           }, 100);
         }
       }

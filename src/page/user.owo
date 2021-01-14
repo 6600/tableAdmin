@@ -10,10 +10,27 @@
     .table-box
     h3 密码管理
     .password-box
-      .password-item(o-for="owo.state.userInfo.sub")
-        .title-item 用户名: {key}
-        .title-item 密码
-        input.pass-input(type="text" value="{value.password}" onchange="changePW('{key}', event)")
+      .password-item
+        table(border="0")
+          tr
+            th 用户名
+            th 密码
+          tr(o-for="owo.state.userInfo.sub")
+            th
+              input.pass-input(type="text" value="{key}" onchange="changePN('{key}', event)")
+            th
+              input.pass-input(type="text" value="{value.password}" onchange="changePW('{key}', event)")
+    h3 表格管理
+    .table-box-2
+      table(border="0")
+        tr(o-for="owo.state.userInfo.data")
+          th
+            input.pass-input(type="text" value="{value.name}" onchange="owo.state.userInfo.data[{key}].name = event.target.value")
+          th
+            span(o-tap="deleteTable('{key}')") 删除表格
+      .button-box
+        .button(o-tap="saveUserInfo()") 保存设置
+        .button(o-tap="addTable") 添加表格
 </template>
 <script>
 function changeP(name, event) {
@@ -32,6 +49,12 @@ function changePW(name, event) {
   console.log(owo.state.userInfo.sub)
   saveUserSub(owo.state.userInfo.sub)
 }
+function changePN(name, event) {
+  owo.state.userInfo.sub[event.target.value] = owo.state.userInfo.sub[name]
+  delete owo.state.userInfo.sub[name]
+  console.log(owo.state.userInfo.sub)
+  saveUserSub(owo.state.userInfo.sub)
+}
 module.exports = {
   show: function () {
     if (!owo.state.userInfo) {
@@ -44,7 +67,10 @@ module.exports = {
       let newHtml = '<table border="0"><tr><th></th>'
       console.log(owo.state.userInfo.data)
       owo.state.userInfo.data.forEach(item => {
-        newHtml += `<th>${item.name}</th>`
+        if (item) {
+          newHtml += `<th>${item.name}</th>`
+        }
+        
       });
       newHtml += `</tr>`
       const sub = owo.state.userInfo.sub
@@ -53,12 +79,13 @@ module.exports = {
           const element = sub[key];
           newHtml += `<tr><th>${key}</th>`
           owo.state.userInfo.data.forEach(item => {
-            if (element.power[item.name]) {
-              newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}" checked="true"/></th>`
-            } else {
-              newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}"/></th>`
+            if (item) {
+              if (element.power[item.name]) {
+                newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}" checked="true"/></th>`
+              } else {
+                newHtml += `<th><input type="checkbox" name="category" onchange="changeP('${key}', event)" value="${item.name}"/></th>`
+              }
             }
-            
           });
           newHtml += `</tr>` 
         }
@@ -67,6 +94,28 @@ module.exports = {
       this.query('.table-box').innerHTML = newHtml
     }, 100);
     
+  },
+  addTable: function () {
+    owo.state.userInfo.data.push({
+      name: "新建表格",
+      data: [
+        {"name": "表项1", "value": [0, 0, 0, 0, 0, 0]},
+        {"name": "表项2", "value": [0, 0, 0, 0, 0, 0]},
+        {"name": "表项3", "value": [0, 0, 0, 0, 0, 0]}
+      ]
+    })
+    saveUserInfo()
+    setTimeout(() => {
+      this.show()
+    }, 100);
+    
+  },
+  deleteTable: function (key) {
+    delete owo.state.userInfo.data[key]
+    saveUserInfo()
+    setTimeout(() => {
+      this.show()
+    }, 100);
   }
 }
 </script>
@@ -90,8 +139,9 @@ module.exports = {
 h3 {
   line-height: 45px;
   font-size: 20px;
-  background-color: blanchedalmond;
+  background-color: whitesmoke;
   padding: 0 10px;
+  margin-top: 20px;
 }
 .title-item {
   line-height: 30px;
@@ -103,5 +153,26 @@ h3 {
   width: 300px;
   line-height: 30px;
   margin: 0 10px;
+}
+table {
+  input {
+    height: 100%;
+    background-color: transparent;
+    border: none;
+  }
+}
+.button {
+  width: 100px;
+  height: 35px;
+  line-height: 35px;
+  background-color: #009fe9;
+  color: white;
+  text-align: center;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.button-box {
+  display: flex;
 }
 </style>
