@@ -41,7 +41,8 @@
           ]
         }
       ],
-      timer: null
+      timer: null,
+      toTemp: ''
     },
     show: function () {
       if (!owo.state.userInfo) {
@@ -59,16 +60,28 @@
         this.createdTab(owo.state.userInfo.data)
       }, 100);
     },
+    deleteItem: function (index) {
+      console.log(owo.state.userInfo.data[this.data.activeIndex].data)
+      delete owo.state.userInfo.data[this.data.activeIndex].data[index]
+      
+      setTimeout(() => {
+        this.createdTable(this.data.activeIndex)
+      }, 100);
+      saveUserInfo()
+    },
     createdTab: function (data) {
       let tabHTML = ``
       let ind = 0
+      // 移交到HTML
+      this.data.toTemp = '<select>'
       data.forEach(element => {
         if (element) {
           tabHTML += `<div class="tab-bar-item" o-tap="createdTable(${ind})">${element.name}</div>`
+          this.data.toTemp += `<option value="${element.name}">${element.name}</option>`
         }
-        
         ind++
       })
+      this.data.toTemp += '</select>'
       // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
       this.query('.tab-bar').innerHTML = tabHTML
       this.createdTable(0)
@@ -85,28 +98,44 @@
       });
       this.queryAll('.tab-bar-item')[ind].classList.add('active')
       let newHtml = '<img class="add-line" o-tap="addline" src="@|add.svg|"><img class="add-line2" o-tap="addline2" src="@|add.svg|"><table border="0" contenteditable="true"><tr>'
+      
       data.forEach(item => {
-        newHtml += `<th>${item.name}</th>`
+        if (item) {
+          newHtml += `<th>${item.name}</th>`
+        }
       });
-      newHtml += `</tr>`
+      newHtml += `<td class="tool">移交到</td></tr>`
 
       // 获取最大的表项
       console.log(data)
       let lineNumber = data.length
       let rowNumber = 0
       data.forEach(element => {
-        if (element.value.length > rowNumber) rowNumber = element.value.length
+        if (element) {
+          if (element.value.length > rowNumber) rowNumber = element.value.length
+        }
       });
       for (let index = 0; index < rowNumber; index++) {
         let temp = data[index] ? data[index].value : []
         newHtml += `<tr>`
         for (let index2 = 0; index2 < lineNumber; index2++) {
           const element = temp[index];
-          const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
-          newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
+          if (data[index2] && data[index2].value) {
+            const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
+            newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
+          }
         }
-        newHtml += `</tr>`
+        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td></tr>`
       }
+      newHtml += `<tr class="delete-bar">`
+      for (let index2 = 0; index2 < lineNumber; index2++) {
+        const element = temp[index];
+        if (data[index2] && data[index2].value) {
+          const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
+          newHtml += `<td><img src="@|delete.svg|" o-tap="deleteItem(${index2})" class="delete"></td>`
+        }
+      }
+      newHtml += `<td></td></tr>`
       newHtml += `</table>`
       this.query('.table-box').innerHTML = newHtml
       setTimeout(() => {
@@ -169,6 +198,54 @@
           }
         })
       }, 5000)
+    },
+    clearData: function () {
+      let temp = [] 
+      owo.state.userInfo.data.forEach(element => {
+        
+        if (element) {
+          let temp2 = []
+          element.data.forEach(element2 => {
+            if (element2 !== null && element2 !== undefined) {
+              let temp3 = []
+              element2.value.forEach(element3 => {
+                if (element3 !== null && element3 !== undefined) {
+                  temp3.push(element3)
+                }
+              });
+              element2.value = temp3
+              temp2.push(element2)
+            }
+          });
+          element.data = temp2
+          temp.push(element)
+        }
+      });
+      owo.state.userInfo.data = temp
+    },
+    goto: function (ind) {
+      console.log(this.$target)
+      var index = this.$target.selectedIndex
+      var value = this.$target.options[index].value
+      if (window.confirm(`你确定要移交到 ${value} 吗？`)) {
+        let indTemp = 0
+        owo.state.userInfo.data[this.data.activeIndex].data.forEach(element => {
+          if (element) {
+            if (owo.state.userInfo.data[index].data[indTemp]) {
+              owo.state.userInfo.data[index].data[indTemp].value.push(element.value[ind])
+            }
+            
+            delete element.value[ind]
+          }
+          indTemp ++
+        });
+        console.log(index)
+        this.clearData()
+        setTimeout(() => {
+          this.createdTable(this.data.activeIndex)
+        }, 100);
+      }
+      
     }
   }
 </script>
@@ -243,5 +320,32 @@
   position: absolute;
   bottom: -60px;
   cursor: pointer;
+}
+.delete {
+  width: 16px;
+  margin: 0 5px;
+}
+.delete-bar td {
+  position: relative;
+}
+.delete-bar .delete {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  cursor: pointer;
+}
+table, tbody {
+  outline: none;
+}
+table select {
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+.delete-bar, .tool {
+  background-color: #e6eaea;
 }
 </style>

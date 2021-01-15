@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.68cujg73nmn.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.gkuvgkr29.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -138,7 +138,7 @@
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.68cujg73nmn.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.gkuvgkr29.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -396,7 +396,8 @@
               "value": [0, 0, 0, 0, 0, 0]
             }]
           }],
-          "timer": null
+          "timer": null,
+          "toTemp": ""
         },
         "show": function show() {
           var _this = this;
@@ -418,27 +419,41 @@
             _this.createdTab(owo.state.userInfo.data);
           }, 100);
         },
-        "createdTab": function createdTab(data) {
+        "deleteItem": function deleteItem(index) {
           var _this2 = this;
 
+          console.log(owo.state.userInfo.data[this.data.activeIndex].data);
+          delete owo.state.userInfo.data[this.data.activeIndex].data[index];
+          setTimeout(function() {
+            _this2.createdTable(_this2.data.activeIndex);
+          }, 100);
+          saveUserInfo();
+        },
+        "createdTab": function createdTab(data) {
+          var _this3 = this;
+
           var tabHTML = "";
-          var ind = 0;
+          var ind = 0; // 移交到HTML
+
+          this.data.toTemp = '<select>';
           data.forEach(function(element) {
             if (element) {
               tabHTML += "<div class=\"tab-bar-item\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
+              _this3.data.toTemp += "<option value=\"" + element.name + "\">" + element.name + "</option>";
             }
 
             ind++;
-          }); // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
+          });
+          this.data.toTemp += '</select>'; // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
 
           this.query('.tab-bar').innerHTML = tabHTML;
           this.createdTable(0);
           setTimeout(function() {
-            _this2.handleEvent(_this2, _this2.query('.tab-bar'));
+            _this3.handleEvent(_this3, _this3.query('.tab-bar'));
           }, 100);
         },
         "createdTable": function createdTable(ind) {
-          var _this3 = this;
+          var _this4 = this;
 
           this.data.activeIndex = ind;
           ind = parseInt(ind);
@@ -449,34 +464,55 @@
           this.queryAll('.tab-bar-item')[ind].classList.add('active');
           var newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>';
           data.forEach(function(item) {
-            newHtml += "<th>" + item.name + "</th>";
+            if (item) {
+              newHtml += "<th>" + item.name + "</th>";
+            }
           });
-          newHtml += "</tr>"; // 获取最大的表项
+          newHtml += "<td class=\"tool\">\u79FB\u4EA4\u5230</td></tr>"; // 获取最大的表项
 
           console.log(data);
           var lineNumber = data.length;
           var rowNumber = 0;
           data.forEach(function(element) {
-            if (element.value.length > rowNumber) rowNumber = element.value.length;
+            if (element) {
+              if (element.value.length > rowNumber) rowNumber = element.value.length;
+            }
           });
 
-          for (var index = 0; index < rowNumber; index++) {
-            var temp = data[index] ? data[index].value : [];
+          for (var _index = 0; _index < rowNumber; _index++) {
+            var _temp = data[_index] ? data[_index].value : [];
+
             newHtml += "<tr>";
 
             for (var index2 = 0; index2 < lineNumber; index2++) {
-              var element = temp[index];
-              var value = data[index2].value[index] == undefined ? '' : data[index2].value[index];
-              newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + index + ")\">" + value + "</td>";
+              var element = _temp[_index];
+
+              if (data[index2] && data[index2].value) {
+                var value = data[index2].value[_index] == undefined ? '' : data[index2].value[_index];
+                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index + ")\">" + value + "</td>";
+              }
             }
 
-            newHtml += "</tr>";
+            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index + ")\">" + this.data.toTemp + "</td></tr>";
           }
 
+          newHtml += "<tr class=\"delete-bar\">";
+
+          for (var _index2 = 0; _index2 < lineNumber; _index2++) {
+            var _element = temp[index];
+
+            if (data[_index2] && data[_index2].value) {
+              var _value = data[_index2].value[index] == undefined ? '' : data[_index2].value[index];
+
+              newHtml += "<td><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index2 + ")\" class=\"delete\"></td>";
+            }
+          }
+
+          newHtml += "<td></td></tr>";
           newHtml += "</table>";
           this.query('.table-box').innerHTML = newHtml;
           setTimeout(function() {
-            _this3.handleEvent(_this3, _this3.query('.table-box'));
+            _this4.handleEvent(_this4, _this4.query('.table-box'));
           }, 100);
         },
         "saveData": function saveData(key, name, index) {
@@ -547,11 +583,61 @@
               }
             });
           }, 5000);
+        },
+        "clearData": function clearData() {
+          var temp = [];
+          owo.state.userInfo.data.forEach(function(element) {
+            if (element) {
+              var temp2 = [];
+              element.data.forEach(function(element2) {
+                if (element2 !== null && element2 !== undefined) {
+                  var temp3 = [];
+                  element2.value.forEach(function(element3) {
+                    if (element3 !== null && element3 !== undefined) {
+                      temp3.push(element3);
+                    }
+                  });
+                  element2.value = temp3;
+                  temp2.push(element2);
+                }
+              });
+              element.data = temp2;
+              temp.push(element);
+            }
+          });
+          owo.state.userInfo.data = temp;
+        },
+        "goto": function goto(ind) {
+          var _this5 = this;
+
+          console.log(this.$target);
+          var index = this.$target.selectedIndex;
+          var value = this.$target.options[index].value;
+
+          if (window.confirm("\u4F60\u786E\u5B9A\u8981\u79FB\u4EA4\u5230 " + value + " \u5417\uFF1F")) {
+            var indTemp = 0;
+            owo.state.userInfo.data[this.data.activeIndex].data.forEach(function(element) {
+              if (element) {
+                if (owo.state.userInfo.data[index].data[indTemp]) {
+                  owo.state.userInfo.data[index].data[indTemp].value.push(element.value[ind]);
+                }
+
+                delete element.value[ind];
+              }
+
+              indTemp++;
+            });
+            console.log(index);
+            this.clearData();
+            setTimeout(function() {
+              _this5.createdTable(_this5.data.activeIndex);
+            }, 100);
+          }
         }
       },
       "user": {
         "show": function show() {
-          var _this4 = this;
+          var _this6 = this;
 
           if (!owo.state.userInfo) {
             setTimeout(function() {
@@ -593,11 +679,11 @@
             }
 
             newHtml += "</table>";
-            _this4.query('.table-box').innerHTML = newHtml;
+            _this6.query('.table-box').innerHTML = newHtml;
           }, 100);
         },
         "addTable": function addTable() {
-          var _this5 = this;
+          var _this7 = this;
 
           owo.state.userInfo.data.push({
             name: "新建表格",
@@ -614,16 +700,16 @@
           });
           saveUserInfo();
           setTimeout(function() {
-            _this5.show();
+            _this7.show();
           }, 100);
         },
         "deleteTable": function deleteTable(key) {
-          var _this6 = this;
+          var _this8 = this;
 
           delete owo.state.userInfo.data[key];
           saveUserInfo();
           setTimeout(function() {
-            _this6.show();
+            _this8.show();
           }, 100);
         }
       }

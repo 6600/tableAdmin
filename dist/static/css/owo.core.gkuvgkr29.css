@@ -359,6 +359,41 @@ li {
   bottom: -60px;
   cursor: pointer;
 }
+
+.home .delete {
+  width: 16px;
+  margin: 0 5px;
+}
+
+.home .delete-bar td {
+  position: relative;
+}
+
+.home .delete-bar .delete {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  cursor: pointer;
+}
+
+.home table,
+.home tbody {
+  outline: none;
+}
+
+.home table select {
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.home .delete-bar,
+.home .tool {
+  background-color: #e6eaea;
+}
 .user .title {
   background-color: #272f3e;
   line-height: 45px;
