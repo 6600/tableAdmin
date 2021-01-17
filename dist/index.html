@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.gkuvgkr29.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.nwaomggcse8.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -138,7 +138,7 @@
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.gkuvgkr29.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.nwaomggcse8.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -409,6 +409,8 @@
             return;
           }
 
+          this.clearData();
+
           if (owo.state.userInfo.username == 'test') {
             this.query('.admin').style.display = 'inline';
           } else {
@@ -429,8 +431,23 @@
           }, 100);
           saveUserInfo();
         },
-        "createdTab": function createdTab(data) {
+        "deleteItem2": function deleteItem2(key) {
           var _this3 = this;
+
+          var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+
+          for (var _index = 0; _index < activeData.length; _index++) {
+            if (activeData[_index]) delete owo.state.userInfo.data[this.data.activeIndex].data[_index].value[key];
+          }
+
+          this.clearData();
+          setTimeout(function() {
+            _this3.createdTable(_this3.data.activeIndex);
+          }, 100);
+          saveUserInfo();
+        },
+        "createdTab": function createdTab(data) {
+          var _this4 = this;
 
           var tabHTML = "";
           var ind = 0; // 移交到HTML
@@ -439,7 +456,7 @@
           data.forEach(function(element) {
             if (element) {
               tabHTML += "<div class=\"tab-bar-item\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
-              _this3.data.toTemp += "<option value=\"" + element.name + "\">" + element.name + "</option>";
+              _this4.data.toTemp += "<option value=\"" + element.name + "\">" + element.name + "</option>";
             }
 
             ind++;
@@ -449,11 +466,11 @@
           this.query('.tab-bar').innerHTML = tabHTML;
           this.createdTable(0);
           setTimeout(function() {
-            _this3.handleEvent(_this3, _this3.query('.tab-bar'));
+            _this4.handleEvent(_this4, _this4.query('.tab-bar'));
           }, 100);
         },
         "createdTable": function createdTable(ind) {
-          var _this4 = this;
+          var _this5 = this;
 
           this.data.activeIndex = ind;
           ind = parseInt(ind);
@@ -463,12 +480,15 @@
           });
           this.queryAll('.tab-bar-item')[ind].classList.add('active');
           var newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>';
+          var ind2 = 0;
           data.forEach(function(item) {
             if (item) {
-              newHtml += "<th>" + item.name + "</th>";
+              newHtml += "<th o-mouseout=\"changeTitle(" + ind2 + ")\">" + item.name + "</th>";
             }
+
+            ind2++;
           });
-          newHtml += "<td class=\"tool\">\u79FB\u4EA4\u5230</td></tr>"; // 获取最大的表项
+          newHtml += "<td class=\"tool\">\u79FB\u4EA4\u5230</td><td class=\"tool2\">\u5220\u9664</td></tr>"; // 获取最大的表项
 
           console.log(data);
           var lineNumber = data.length;
@@ -479,32 +499,32 @@
             }
           });
 
-          for (var _index = 0; _index < rowNumber; _index++) {
-            var _temp = data[_index] ? data[_index].value : [];
+          for (var _index2 = 0; _index2 < rowNumber; _index2++) {
+            var _temp = data[_index2] ? data[_index2].value : [];
 
             newHtml += "<tr>";
 
             for (var index2 = 0; index2 < lineNumber; index2++) {
-              var element = _temp[_index];
+              var element = _temp[_index2];
 
               if (data[index2] && data[index2].value) {
-                var value = data[index2].value[_index] == undefined ? '' : data[index2].value[_index];
-                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index + ")\">" + value + "</td>";
+                var value = data[index2].value[_index2] == undefined ? '' : data[index2].value[_index2];
+                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index2 + ")\">" + value + "</td>";
               }
             }
 
-            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index + ")\">" + this.data.toTemp + "</td></tr>";
+            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"></td></tr>";
           }
 
           newHtml += "<tr class=\"delete-bar\">";
 
-          for (var _index2 = 0; _index2 < lineNumber; _index2++) {
+          for (var _index3 = 0; _index3 < lineNumber; _index3++) {
             var _element = temp[index];
 
-            if (data[_index2] && data[_index2].value) {
-              var _value = data[_index2].value[index] == undefined ? '' : data[_index2].value[index];
+            if (data[_index3] && data[_index3].value) {
+              var _value = data[_index3].value[index] == undefined ? '' : data[_index3].value[index];
 
-              newHtml += "<td><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index2 + ")\" class=\"delete\"></td>";
+              newHtml += "<td><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"></td>";
             }
           }
 
@@ -512,7 +532,7 @@
           newHtml += "</table>";
           this.query('.table-box').innerHTML = newHtml;
           setTimeout(function() {
-            _this4.handleEvent(_this4, _this4.query('.table-box'));
+            _this5.handleEvent(_this5, _this5.query('.table-box'));
           }, 100);
         },
         "saveData": function saveData(key, name, index) {
@@ -529,16 +549,29 @@
           }); // console.log(owo.state.userInfo.data[this.data.activeIndex])
 
           this.createdTable(this.data.activeIndex);
+          saveUserInfo();
         },
         "addline2": function addline2() {
           var temp = owo.state.userInfo.data[this.data.activeIndex].data;
           console.log(owo.state.userInfo.data[this.data.activeIndex]);
+
+          if (!temp[0].value) {
+            owo.tool.toast('请先增加列项!');
+            return;
+          }
+
           temp[0].value.push('');
           this.createdTable(this.data.activeIndex);
+          saveUserInfo();
         },
         "saveTab": function saveTab(ind) {
           owo.state.userInfo.data[ind].name = this.$target.innerText;
           this.createdTable(this.data.activeIndex);
+        },
+        "changeTitle": function changeTitle(ind) {
+          owo.state.userInfo.data[this.data.activeIndex].data[ind].name = this.$target.innerText;
+          this.createdTable(this.data.activeIndex);
+          saveUserInfo();
         },
         "addTable": function addTable() {
           owo.state.userInfo.data.push({
@@ -608,7 +641,7 @@
           owo.state.userInfo.data = temp;
         },
         "goto": function goto(ind) {
-          var _this5 = this;
+          var _this6 = this;
 
           console.log(this.$target);
           var index = this.$target.selectedIndex;
@@ -630,14 +663,14 @@
             console.log(index);
             this.clearData();
             setTimeout(function() {
-              _this5.createdTable(_this5.data.activeIndex);
+              _this6.createdTable(_this6.data.activeIndex);
             }, 100);
           }
         }
       },
       "user": {
         "show": function show() {
-          var _this6 = this;
+          var _this7 = this;
 
           if (!owo.state.userInfo) {
             setTimeout(function() {
@@ -679,11 +712,11 @@
             }
 
             newHtml += "</table>";
-            _this6.query('.table-box').innerHTML = newHtml;
+            _this7.query('.table-box').innerHTML = newHtml;
           }, 100);
         },
         "addTable": function addTable() {
-          var _this7 = this;
+          var _this8 = this;
 
           owo.state.userInfo.data.push({
             name: "新建表格",
@@ -700,16 +733,16 @@
           });
           saveUserInfo();
           setTimeout(function() {
-            _this7.show();
+            _this8.show();
           }, 100);
         },
         "deleteTable": function deleteTable(key) {
-          var _this8 = this;
+          var _this9 = this;
 
           delete owo.state.userInfo.data[key];
           saveUserInfo();
           setTimeout(function() {
-            _this8.show();
+            _this9.show();
           }, 100);
         }
       }

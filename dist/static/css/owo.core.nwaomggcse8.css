@@ -394,6 +394,10 @@ li {
 .home .tool {
   background-color: #e6eaea;
 }
+
+.home .delete {
+  cursor: pointer;
+}
 .user .title {
   background-color: #272f3e;
   line-height: 45px;

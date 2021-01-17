@@ -51,6 +51,7 @@
         }, 100);
         return
       }
+      this.clearData()
       if (owo.state.userInfo.username == 'test') {
         this.query('.admin').style.display = 'inline'
       } else {
@@ -64,6 +65,18 @@
       console.log(owo.state.userInfo.data[this.data.activeIndex].data)
       delete owo.state.userInfo.data[this.data.activeIndex].data[index]
       
+      setTimeout(() => {
+        this.createdTable(this.data.activeIndex)
+      }, 100);
+      saveUserInfo()
+    },
+    deleteItem2: function (key) {
+      let activeData = owo.state.userInfo.data[this.data.activeIndex].data
+      for (let index = 0; index < activeData.length; index++) {
+        if (activeData[index]) delete owo.state.userInfo.data[this.data.activeIndex].data[index].value[key]
+        
+      }
+      this.clearData()
       setTimeout(() => {
         this.createdTable(this.data.activeIndex)
       }, 100);
@@ -98,13 +111,14 @@
       });
       this.queryAll('.tab-bar-item')[ind].classList.add('active')
       let newHtml = '<img class="add-line" o-tap="addline" src="@|add.svg|"><img class="add-line2" o-tap="addline2" src="@|add.svg|"><table border="0" contenteditable="true"><tr>'
-      
+      let ind2 = 0
       data.forEach(item => {
         if (item) {
-          newHtml += `<th>${item.name}</th>`
+          newHtml += `<th o-mouseout="changeTitle(${ind2})">${item.name}</th>`
         }
+        ind2++
       });
-      newHtml += `<td class="tool">移交到</td></tr>`
+      newHtml += `<td class="tool">移交到</td><td class="tool2">删除</td></tr>`
 
       // 获取最大的表项
       console.log(data)
@@ -125,7 +139,7 @@
             newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
           }
         }
-        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td></tr>`
+        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"></td></tr>`
       }
       newHtml += `<tr class="delete-bar">`
       for (let index2 = 0; index2 < lineNumber; index2++) {
@@ -153,16 +167,27 @@
       temp.data.push({"name": "新增项", "value": Array(temp.row)})
       // console.log(owo.state.userInfo.data[this.data.activeIndex])
       this.createdTable(this.data.activeIndex)
+      saveUserInfo()
     },
     addline2: function () {
       let temp = owo.state.userInfo.data[this.data.activeIndex].data
       console.log(owo.state.userInfo.data[this.data.activeIndex])
+      if (!temp[0].value) {
+        owo.tool.toast('请先增加列项!')
+        return
+      }
       temp[0].value.push('')
       this.createdTable(this.data.activeIndex)
+      saveUserInfo()
     },
     saveTab: function (ind) {
       owo.state.userInfo.data[ind].name = this.$target.innerText
       this.createdTable(this.data.activeIndex)
+    },
+    changeTitle: function (ind) {
+      owo.state.userInfo.data[this.data.activeIndex].data[ind].name = this.$target.innerText
+      this.createdTable(this.data.activeIndex)
+      saveUserInfo()
     },
     addTable: function () {
       owo.state.userInfo.data.push({
@@ -347,5 +372,8 @@ table select {
 }
 .delete-bar, .tool {
   background-color: #e6eaea;
+}
+.delete {
+  cursor: pointer;
 }
 </style>
