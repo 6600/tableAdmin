@@ -41,3 +41,10 @@ function saveUserInfo () {
     }
   })
 }
+
+function copyText(text) {
+  var input = document.getElementById("copyinput");
+  input.value = text; // 修改文本框的内容
+  input.select(); // 选中文本
+  document.execCommand("copy"); // 执行浏览器复制命令
+ }

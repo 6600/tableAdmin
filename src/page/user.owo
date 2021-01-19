@@ -31,6 +31,10 @@
       .button-box
         .button(o-tap="saveUserInfo()") 保存设置
         .button(o-tap="addTable") 添加表格
+    h3 修改管理员密码
+    input(type="text" placeholder="输入新密码" id="newPass")
+    .button-box
+      .button(o-tap="changePassword") 确定修改
 </template>
 <script>
 function changeP(name, event) {
@@ -116,7 +120,25 @@ module.exports = {
     setTimeout(() => {
       this.show()
     }, 100);
-  }
+  },
+  changePassword: function () {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({"type":"苏州斯百特教育","value":this.query('#newPass').value,"username":"苏州斯百特教育","session":owo.state.userInfo.session});
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://going.run/userServer?route=changePassword", requestOptions)
+      .then(response => response.text())
+      .then(result => owo.tool.toast('密码修改成功!'))
+      .catch(error => console.log('error', error));
+      }
 }
 </script>
 <style lang="less">

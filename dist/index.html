@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.nwaomggcse8.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.hp93wvm47f.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -81,6 +81,7 @@
     <div class="conn">
       <div class="table-box"></div>
     </div>
+    <input id="copyinput" type="text" style="opacity: 0;user-select: none;pointer-events: none;">
   </div>
   <!-- 页面[user]-->
   <div class="user page" template="user" style="display: none;">
@@ -134,11 +135,16 @@
           <div class="button" o-tap="addTable">添加表格</div>
         </div>
       </div>
+      <h3>修改管理员密码</h3>
+      <input type="text" placeholder="输入新密码" id="newPass">
+      <div class="button-box">
+        <div class="button" o-tap="changePassword">确定修改</div>
+      </div>
     </div>
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.nwaomggcse8.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.hp93wvm47f.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -223,8 +229,8 @@
           "registerPassWordR": "",
           "registerPhone": "",
           "registerCode": "",
-          "username": "test",
-          "password": "Gsyugj85eoAebnzN",
+          "username": "苏州斯百特教育",
+          "password": "123456",
           "toast": null,
           "session": null
         },
@@ -235,7 +241,7 @@
         "login": function login() {
           var getUrl = "http://going.run/userServer?route=login";
 
-          if (this.data.username !== 'test') {
+          if (this.data.username !== '苏州斯百特教育') {
             getUrl = "http://going.run/userServer?route=loginSub";
           }
 
@@ -246,7 +252,7 @@
             },
             body: JSON.stringify({
               type: appType,
-              username: 'test',
+              username: '苏州斯百特教育',
               subname: this.data.username,
               password: this.data.password
             })
@@ -411,7 +417,7 @@
 
           this.clearData();
 
-          if (owo.state.userInfo.username == 'test') {
+          if (owo.state.userInfo.username == '苏州斯百特教育') {
             this.query('.admin').style.display = 'inline';
           } else {
             this.query('.admin').style.display = 'none';
@@ -513,7 +519,7 @@
               }
             }
 
-            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"></td></tr>";
+            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><div class=\"tool-td\"><img src=\"./static/resource/fuzhi.svg\" o-tap=\"fuzhi(" + _index2 + ")\" class=\"qiuhe\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"></div></td></tr>";
           }
 
           newHtml += "<tr class=\"delete-bar\">";
@@ -524,7 +530,7 @@
             if (data[_index3] && data[_index3].value) {
               var _value = data[_index3].value[index] == undefined ? '' : data[_index3].value[index];
 
-              newHtml += "<td><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"></td>";
+              newHtml += "<td><div class=\"tool-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"><img src=\"./static/resource/qiuhe.svg\" o-tap=\"qiuhe(" + _index3 + ")\" class=\"qiuhe\"></div></td>";
             }
           }
 
@@ -666,6 +672,26 @@
               _this6.createdTable(_this6.data.activeIndex);
             }, 100);
           }
+        },
+        "qiuhe": function qiuhe(index) {
+          var list = owo.state.userInfo.data[this.data.activeIndex].data[index];
+          var he = 0;
+          console.log(list.value);
+          list.value.forEach(function(element) {
+            if (parseFloat(element)) he += parseFloat(element);
+          });
+          alert("\u603B\u6570\u4E3A: " + he);
+        },
+        "fuzhi": function fuzhi(key) {
+          var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+          var arr = [];
+
+          for (var _index4 = 0; _index4 < activeData.length; _index4++) {
+            if (activeData[_index4]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[_index4].value[key]);
+          }
+
+          copyText(arr.join(' '));
+          owo.tool.toast('复制成功!');
         }
       },
       "user": {
@@ -744,6 +770,29 @@
           setTimeout(function() {
             _this9.show();
           }, 100);
+        },
+        "changePassword": function changePassword() {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+          var raw = JSON.stringify({
+            "type": "苏州斯百特教育",
+            "value": this.query('#newPass').value,
+            "username": "苏州斯百特教育",
+            "session": owo.state.userInfo.session
+          });
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          fetch("https://going.run/userServer?route=changePassword", requestOptions).then(function(response) {
+            return response.text();
+          }).then(function(result) {
+            return owo.tool.toast('密码修改成功!');
+          })["catch"](function(error) {
+            return console.log('error', error);
+          });
         }
       }
     };

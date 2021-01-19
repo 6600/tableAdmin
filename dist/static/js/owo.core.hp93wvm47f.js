@@ -1,4 +1,4 @@
-// Mon Jan 18 2021 01:08:52 GMT+0800 (GMT+08:00)
+// Tue Jan 19 2021 18:52:26 GMT+0800 (GMT+08:00)
 var owo = {tool: {},state: {},event: {}};
 /* 方法合集 */
 var _owo = {
@@ -400,6 +400,14 @@ _owo.animation = function (oldDom, newDom, animationIn, animationOut, forward) {
 
 
 
+// 计算$dom
+var idList = document.querySelectorAll('[id]')
+owo.id = {}
+for (var ind = 0; ind < idList.length; ind++) {
+  var item = idList[ind]
+  owo.id[item.getAttribute('id')] = item
+}
+
 // 判断是否为手机
 _owo.isMobi = navigator.userAgent.toLowerCase().match(/(ipod|ipad|iphone|android|coolpad|mmp|smartphone|midp|wap|xoom|symbian|j2me|blackberry|wince)/i) != null
 function Page(pageScript, parentScript) {
@@ -529,11 +537,12 @@ function handleEvent (moudleScript, enterDom) {
         tempNode.setAttribute('otemp-for', forValue)
         var temp = tempNode.outerHTML
         var value = forEle[key];
+        if (value == undefined) continue
         var tempCopy = temp
         // 获取模板插值
         var varList = _owo.cutStringArray(tempCopy, '{', '}')
         varList.forEach(element => {
-          var forValue = new Function('value', 'key', 'return ' + element)
+          const forValue = new Function('value', 'key', 'if (' + element + ') {return ' + element + '} else {return ""}')
           // 默认变量
           tempCopy = tempCopy.replace('{' + element + '}', forValue.apply(moudleScript, [value, key]))
         })

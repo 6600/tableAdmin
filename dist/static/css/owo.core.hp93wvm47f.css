@@ -360,23 +360,18 @@ li {
   cursor: pointer;
 }
 
-.home .delete {
+.home .delete,
+.home .qiuhe {
   width: 16px;
   margin: 0 5px;
-}
-
-.home .delete-bar td {
-  position: relative;
-}
-
-.home .delete-bar .delete {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
   cursor: pointer;
+}
+
+.home .tool-td {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .home table,

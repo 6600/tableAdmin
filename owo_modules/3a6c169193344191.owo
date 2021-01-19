@@ -75,8 +75,8 @@
       registerPassWordR: "",
       registerPhone: "",
       registerCode: "",
-      username: "test",
-      password: "Gsyugj85eoAebnzN",
+      username: "苏州斯百特教育",
+      password: "123456",
       toast: null,
       session: null
     },
@@ -86,7 +86,7 @@
     },
     login: function () {
       let getUrl = `http://going.run/userServer?route=login`
-      if (this.data.username !== 'test') {
+      if (this.data.username !== '苏州斯百特教育') {
         getUrl = `http://going.run/userServer?route=loginSub`
       }
       fetch(getUrl, {
@@ -96,7 +96,7 @@
         },
         body: JSON.stringify({
           type: appType,
-          username: 'test',
+          username: '苏州斯百特教育',
           subname: this.data.username,
           password: this.data.password
         })

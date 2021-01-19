@@ -8,6 +8,7 @@
   .tab-bar
   .conn
     .table-box
+  input#copyinput(type="text" style="opacity: 0;user-select: none;pointer-events: none;")
 </template>
 
 <script>
@@ -52,7 +53,7 @@
         return
       }
       this.clearData()
-      if (owo.state.userInfo.username == 'test') {
+      if (owo.state.userInfo.username == '苏州斯百特教育') {
         this.query('.admin').style.display = 'inline'
       } else {
         this.query('.admin').style.display = 'none'
@@ -139,14 +140,14 @@
             newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
           }
         }
-        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"></td></tr>`
+        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><div class="tool-td"><img src="@|fuzhi.svg|" o-tap="fuzhi(${index})" class="qiuhe"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"></div></td></tr>`
       }
       newHtml += `<tr class="delete-bar">`
       for (let index2 = 0; index2 < lineNumber; index2++) {
         const element = temp[index];
         if (data[index2] && data[index2].value) {
           const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
-          newHtml += `<td><img src="@|delete.svg|" o-tap="deleteItem(${index2})" class="delete"></td>`
+          newHtml += `<td><div class="tool-td"><img src="@|delete.svg|" o-tap="deleteItem(${index2})" class="delete"><img src="@|qiuhe.svg|" o-tap="qiuhe(${index2})" class="qiuhe"></div></td>`
         }
       }
       newHtml += `<td></td></tr>`
@@ -271,6 +272,25 @@
         }, 100);
       }
       
+    },
+    qiuhe: function (index) {
+      const list = owo.state.userInfo.data[this.data.activeIndex].data[index]
+      let he = 0
+      console.log(list.value)
+      list.value.forEach(element => {
+        if (parseFloat(element)) he += parseFloat(element)
+      })
+      alert(`总数为: ${he}`)
+    },
+    fuzhi: function (key) {
+      let activeData = owo.state.userInfo.data[this.data.activeIndex].data
+      let arr = []
+      for (let index = 0; index < activeData.length; index++) {
+        if (activeData[index]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[index].value[key])
+        
+      }
+      copyText(arr.join(' '))
+      owo.tool.toast('复制成功!')
     }
   }
 </script>
@@ -346,21 +366,16 @@
   bottom: -60px;
   cursor: pointer;
 }
-.delete {
+.delete, .qiuhe {
   width: 16px;
   margin: 0 5px;
-}
-.delete-bar td {
-  position: relative;
-}
-.delete-bar .delete {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
   cursor: pointer;
+}
+.tool-td {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 table, tbody {
   outline: none;
