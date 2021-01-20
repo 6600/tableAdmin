@@ -454,3 +454,8 @@ li {
   display: flex;
 }
 
+.user th span {
+  margin: 0 5px;
+  cursor: pointer;
+}
+

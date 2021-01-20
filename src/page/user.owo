@@ -28,6 +28,7 @@
             input.pass-input(type="text" value="{value.name}" onchange="owo.state.userInfo.data[{key}].name = event.target.value")
           th
             span(o-tap="deleteTable('{key}')") 删除表格
+            span(o-tap="copyTable('{key}')") 复制表格
       .button-box
         .button(o-tap="saveUserInfo()") 保存设置
         .button(o-tap="addTable") 添加表格
@@ -119,6 +120,16 @@ module.exports = {
     saveUserInfo()
     setTimeout(() => {
       this.show()
+      this.handleEvent(this, this.query('.table-box-2'))
+    }, 100);
+  },
+  copyTable: function (key) {
+    owo.state.userInfo.data.push(owo.state.userInfo.data[key])
+    saveUserInfo()
+    setTimeout(() => {
+      this.show()
+      this.handleEvent(this, this.query('.table-box-2'))
+      
     }, 100);
   },
   changePassword: function () {
@@ -196,5 +207,9 @@ table {
 }
 .button-box {
   display: flex;
+}
+th span {
+  margin: 0 5px;
+  cursor: pointer;
 }
 </style>

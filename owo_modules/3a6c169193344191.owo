@@ -75,8 +75,8 @@
       registerPassWordR: "",
       registerPhone: "",
       registerCode: "",
-      username: "苏州斯百特教育",
-      password: "123456",
+      username: "",
+      password: "",
       toast: null,
       session: null
     },

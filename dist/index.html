@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.hp93wvm47f.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.o659c8qbnvr.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -126,6 +126,7 @@
               </th>
               <th>
                 <span o-tap="deleteTable('{key}')">删除表格</span>
+                <span o-tap="copyTable('{key}')">复制表格</span>
               </th>
             </tr>
           </tbody>
@@ -144,7 +145,7 @@
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.hp93wvm47f.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.o659c8qbnvr.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -229,8 +230,8 @@
           "registerPassWordR": "",
           "registerPhone": "",
           "registerCode": "",
-          "username": "苏州斯百特教育",
-          "password": "123456",
+          "username": "",
+          "password": "",
           "toast": null,
           "session": null
         },
@@ -769,6 +770,19 @@
           saveUserInfo();
           setTimeout(function() {
             _this9.show();
+
+            _this9.handleEvent(_this9, _this9.query('.table-box-2'));
+          }, 100);
+        },
+        "copyTable": function copyTable(key) {
+          var _this10 = this;
+
+          owo.state.userInfo.data.push(owo.state.userInfo.data[key]);
+          saveUserInfo();
+          setTimeout(function() {
+            _this10.show();
+
+            _this10.handleEvent(_this10, _this10.query('.table-box-2'));
           }, 100);
         },
         "changePassword": function changePassword() {
