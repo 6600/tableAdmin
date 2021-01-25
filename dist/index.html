@@ -1,735 +1,849 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <!-- 页面的元信息 -->
-    <title>测试预览页面</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=1000, user-scalable=yes"/>
-    <meta name="format-detection" content="telephone=no, email=no"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="white"/>
-    <meta name="renderer" content="webkit"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <meta name="filetype" content="1"/>
-    <meta name="publishedtype" content="1"/>
-    <meta name="pagetype" content="2"/>
-    <meta name="description" content="{TAG_59447_TAG}"/>
-    <meta name="keywords" content="{TAG_59446_TAG}"/>
-    <meta name="catalogs" content="{TAG_83943_TAG}"/>
-    
-      <!-- 页面主样式文件 -->
-      <link charset="utf-8"  rel="stylesheet" href="./static/css/owo.core.css">
-      
-    <!-- 附属css文件 -->
-    <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
-      
-  </head>
-  <body>
-    
-    <!-- 页面[login]-->
-    <div class="login page" template="login" style="display: none;"><div class="router" view="loginContent"><div class="view-login" route="login"><div class="image-box"><img src="./static/resource/8c8aa8829608aa383dd9a6c631fa07b.jpg"></div><div class="hellow-text">登录苏州斯百特教育财务平台</div><div class="user-name-bar input-bar"><img class="bar-icon" src="https://cunchu.site/puge/login/user.png"><input type="text" o-value="this.data.username" placeholder="用户名"></div><div class="pass-word-bar input-bar"><img class="bar-icon" src="https://cunchu.site/puge/login/password.png"><input type="password" o-value="this.data.password" placeholder="密码"></div><div class="button-box"><div class="button" o-tap="login" o-hover="radial-out">登录</div><div class="button" o-hover="radial-out" style=" background-color: burlywood;" go="/view-loginContent=register">注册</div></div><div class="tool-bar"><div class="left"></div><div class="right" go-route="">忘记密码</div></div></div><div class="view-register" route="register"><img class="bg-1" src="https://cunchu.site/puge/login/art.png"><p>欢迎注册PUGE账号</p><input class="register-input" type="text" o-value="this.data.registerusername" placeholder="用户名"><input class="register-input" type="password" o-value="this.data.registerPassWord" placeholder="密码"><input class="register-input" type="password" o-value="this.data.registerPassWordR" placeholder="确认密码"><div class="mini-box clear"><input class="register-input" type="text" o-value="this.data.registerPhone" placeholder="手机号码"><div class="button" o-tap="sendSMS">发送验证码</div></div><input class="register-input" type="text" o-value="this.data.registerCode" placeholder="验证码"><div class="button" o-tap="register">注册</div></div></div></div>
-    <!-- 页面[page]-->
-    <div class="home page" template="page" style="display: none;"><div class="title"><span>用户管理</span><span><a class="admin" href="#user" style="display: none;">后台管理</a><a href="#">退出登录</a></span></div><div class="tab-bar"></div><div class="conn"><div class="table-box"></div></div><input id="copyinput" type="text" style="opacity: 0;user-select: none;pointer-events: none;"></div>
-    <!-- 页面[user]-->
-    <div class="user page" template="user" style="display: none;"><div class="title"><span>后台管理</span><span><a href="#page">表格查看</a><a href="#">退出登录</a></span></div><div class="conn"><h3>权限管理</h3><div class="table-box"></div><h3>密码管理</h3><div class="password-box"><div class="password-item"><table border="0"><tbody><tr><th>用户名</th><th>密码</th></tr><tr o-for="owo.state.userInfo.sub"><th><input class="pass-input" type="text" value="{key}" onchange="changePN('{key}', event)"></th><th><input class="pass-input" type="text" value="{value.password}" onchange="changePW('{key}', event)"></th></tr></tbody></table></div></div><h3>表格管理</h3><div class="table-box-2"><table border="0"><tbody><tr o-for="owo.state.userInfo.data"><th><input class="pass-input" type="text" value="{value.name}" onchange="owo.state.userInfo.data[{key}].name = event.target.value"></th><th><span o-tap="deleteTable('{key}')">删除表格</span><span o-tap="copyTable('{key}')">复制表格</span></th></tr></tbody></table><div class="button-box"><div class="button" o-tap="saveUserInfo()">保存设置</div><div class="button" o-tap="addTable">添加表格</div></div></div><h3>修改管理员密码</h3><input type="text" placeholder="输入新密码" id="newPass"><div class="button-box"><div class="button" o-tap="changePassword">确定修改</div></div></div></div>
-    
-<!-- 框架script文件 -->
-<script src="./static/js/owo.core.js" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript" charset="UTF-8">
-// 模块 login 的script代码
-var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
-// if (userInfo) {
-//   console.log(userInfo)
-//   owo.state.userInfo = JSON.parse(userInfo)
-//   if (typeof owo.state.userInfo.data == "string") {
-//     if (owo.state.userInfo.data == '') owo.state.userInfo.data = {}
-//     else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data)
-//   }
-//   // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
-// }
 
-function getDataFormSession(username, session) {
-  fetch("http://going.run/userServer?route=loginSession", {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      type: appType,
-      username: username,
-      session: session
-    })
-  }).then(function (response) {
-    return response.json();
-  }).then(function (res) {
-    console.log(res);
+<head>
+  <!-- 页面的元信息 -->
+  <title>苏州斯百特教育财务平台</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=1000, user-scalable=yes" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+  <meta name="renderer" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="filetype" content="1" />
+  <meta name="publishedtype" content="1" />
+  <meta name="pagetype" content="2" />
+  <meta name="description" content="{TAG_59447_TAG}" />
+  <meta name="keywords" content="{TAG_59446_TAG}" />
+  <meta name="catalogs" content="{TAG_83943_TAG}" />
 
-    if (res.err === 0) {
-      owo.tool.toast('登陆成功');
-      owo.state.userInfo = res.data; // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
+  <!-- 页面主样式文件 -->
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.uefab17jg5.css">
 
-      if (owo.event.login) {
-        owo.event.login(res.data);
-      }
-    } else {
-      owo.go('login');
-      owo.tool.toast(res.message);
-    }
-  });
-} // 模块 page 的script代码
+  <!-- 附属css文件 -->
+  <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
 
+</head>
 
-owo.event.login = function () {
-  owo.script.page.createdTable(0);
-}; // 模块 user 的script代码
+<body>
 
+  <!-- 页面[login]-->
+  <div class="login page" template="login" style="display: none;">
+    <div class="router" view="loginContent">
+      <div class="view-login" route="login">
+        <div class="image-box">
+          <img src="./static/resource/8c8aa8829608aa383dd9a6c631fa07b.jpg">
+        </div>
+        <div class="hellow-text">登录苏州斯百特教育财务平台</div>
+        <div class="user-name-bar input-bar">
+          <img class="bar-icon" src="https://cunchu.site/puge/login/user.png">
+          <input type="text" o-value="this.data.username" placeholder="用户名">
+        </div>
+        <div class="pass-word-bar input-bar">
+          <img class="bar-icon" src="https://cunchu.site/puge/login/password.png">
+          <input type="password" o-value="this.data.password" placeholder="密码">
+        </div>
+        <div class="button-box">
+          <div class="button" o-tap="login" o-hover="radial-out">登录</div>
+          <div class="button" o-hover="radial-out" style=" background-color: burlywood;" go="/view-loginContent=register">注册</div>
+        </div>
+        <div class="tool-bar">
+          <div class="left"></div>
+          <div class="right" go-route="">忘记密码</div>
+        </div>
+      </div>
+      <div class="view-register" route="register">
+        <img class="bg-1" src="https://cunchu.site/puge/login/art.png">
+        <p>欢迎注册PUGE账号</p>
+        <input class="register-input" type="text" o-value="this.data.registerusername" placeholder="用户名">
+        <input class="register-input" type="password" o-value="this.data.registerPassWord" placeholder="密码">
+        <input class="register-input" type="password" o-value="this.data.registerPassWordR" placeholder="确认密码">
+        <div class="mini-box clear">
+          <input class="register-input" type="text" o-value="this.data.registerPhone" placeholder="手机号码">
+          <div class="button" o-tap="sendSMS">发送验证码</div>
+        </div>
+        <input class="register-input" type="text" o-value="this.data.registerCode" placeholder="验证码">
+        <div class="button" o-tap="register">注册</div>
+      </div>
+    </div>
+  </div>
+  <!-- 页面[page]-->
+  <div class="home page" template="page" style="display: none;">
+    <div class="title">
+      <span>用户管理</span>
+      <span>
+        <a class="admin" href="#user" style="display: none;">后台管理</a>
+        <a href="#">退出登录</a>
+      </span>
+    </div>
+    <div class="tab-bar"></div>
+    <div class="conn">
+      <div class="table-box"></div>
+    </div>
+    <input id="copyinput" type="text" style="opacity: 0;user-select: none;pointer-events: none;">
+  </div>
+  <!-- 页面[user]-->
+  <div class="user page" template="user" style="display: none;">
+    <div class="title">
+      <span>后台管理</span>
+      <span>
+        <a href="#page">表格查看</a>
+        <a href="#">退出登录</a>
+      </span>
+    </div>
+    <div class="conn">
+      <h3>权限管理</h3>
+      <div class="table-box"></div>
+      <h3>密码管理</h3>
+      <div class="password-box">
+        <div class="password-item">
+          <table border="0">
+            <tbody>
+              <tr>
+                <th>用户名</th>
+                <th>密码</th>
+              </tr>
+              <tr o-for="owo.state.userInfo.sub">
+                <th>
+                  <input class="pass-input" type="text" value="{key}" onchange="changePN('{key}', event)">
+                </th>
+                <th>
+                  <input class="pass-input" type="text" value="{value.password}" onchange="changePW('{key}', event)">
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <h3>表格管理</h3>
+      <div class="table-box-2">
+        <table border="0">
+          <tbody>
+            <tr o-for="owo.state.userInfo.data">
+              <th>
+                <input class="pass-input" type="text" value="{value.name}" onchange="owo.state.userInfo.data[{key}].name = event.target.value">
+              </th>
+              <th>
+                <span o-tap="deleteTable('{key}')">删除表格</span>
+                <span o-tap="copyTable('{key}')">复制表格</span>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+        <div class="button-box">
+          <div class="button" o-tap="saveUserInfo()">保存设置</div>
+          <div class="button" o-tap="addTable">添加表格</div>
+        </div>
+      </div>
+      <h3>修改管理员密码</h3>
+      <input type="text" placeholder="输入新密码" id="newPass">
+      <div class="button-box">
+        <div class="button" o-tap="changePassword">确定修改</div>
+      </div>
+    </div>
+  </div>
 
-function changeP(name, event) {
-  var isChecked = event.target.checked;
-  var powerName = event.target.value;
+  <!-- 框架script文件 -->
+  <script src="./static/js/owo.core.uefab17jg5.js" type="text/javascript" charset="UTF-8"></script>
+  <script type="text/javascript" charset="UTF-8">
+    // 模块 login 的script代码
+    var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
+    // if (userInfo) {
+    //   console.log(userInfo)
+    //   owo.state.userInfo = JSON.parse(userInfo)
+    //   if (typeof owo.state.userInfo.data == "string") {
+    //     if (owo.state.userInfo.data == '') owo.state.userInfo.data = {}
+    //     else owo.state.userInfo.data = JSON.parse(owo.state.userInfo.data)
+    //   }
+    //   // getDataFormSession(owo.state.userInfo.username, owo.state.userInfo.session)
+    // }
 
-  if (isChecked) {
-    owo.state.userInfo.sub[name].power[powerName] = true;
-  } else {
-    owo.state.userInfo.sub[name].power[powerName] = false;
-  }
-
-  console.log(owo.state.userInfo.sub);
-  saveUserSub(owo.state.userInfo.sub);
-}
-
-function changePW(name, event) {
-  owo.state.userInfo.sub[name].password = event.target.value;
-  console.log(owo.state.userInfo.sub);
-  saveUserSub(owo.state.userInfo.sub);
-}
-
-function changePN(name, event) {
-  owo.state.userInfo.sub[event.target.value] = owo.state.userInfo.sub[name];
-  delete owo.state.userInfo.sub[name];
-  console.log(owo.state.userInfo.sub);
-  saveUserSub(owo.state.userInfo.sub);
-}
-
-owo.script = {
-  "login": {
-    "data": {
-      "registerusername": "",
-      "registerPassWord": "",
-      "registerPassWordR": "",
-      "registerPhone": "",
-      "registerCode": "",
-      "username": "",
-      "password": "",
-      "toast": null,
-      "session": null
-    },
-    "created": function created() {
-      if (owo.tool.toast) toast = owo.tool.toast;else toast = alert;
-    },
-    "login": function login() {
-      var getUrl = "http://going.run/userServer?route=login";
-
-      if (this.data.username !== '苏州斯百特教育') {
-        getUrl = "http://going.run/userServer?route=loginSub";
-      }
-
-      fetch(getUrl, {
+    function getDataFormSession(username, session) {
+      fetch("http://going.run/userServer?route=loginSession", {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           type: appType,
-          username: '苏州斯百特教育',
-          subname: this.data.username,
-          password: this.data.password
+          username: username,
+          session: session
         })
-      }).then(function (response) {
+      }).then(function(response) {
         return response.json();
-      }).then(function (res) {
+      }).then(function(res) {
         console.log(res);
 
         if (res.err === 0) {
-          toast('登陆成功'); // do something
-
+          owo.tool.toast('登陆成功');
           owo.state.userInfo = res.data; // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
 
-          setTimeout(function () {
-            owo.go('page');
-          }, 0);
+          if (owo.event.login) {
+            owo.event.login(res.data);
+          }
         } else {
-          toast(res.message);
-        }
-      });
-    },
-    "register": function register() {
-      if (!this.data.registerusername) {
-        toast('用户名不能为空哦!');
-        return;
-      }
-
-      if (!this.data.registerPassWord) {
-        toast('密码不能为空哦!');
-        return;
-      }
-
-      if (!this.data.registerPassWordR) {
-        toast('重复密码不能为空哦!');
-        return;
-      }
-
-      if (!this.data.registerPhone) {
-        toast('手机号码不能为空!');
-        return;
-      }
-
-      if (this.data.registerPassWord !== this.data.registerPassWordR) {
-        toast('两次输入的密码不一致哦!');
-        return;
-      }
-
-      fetch("http://going.run/userServer?route=register", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          phone: this.data.registerPhone,
-          username: this.data.registerusername,
-          password: this.data.registerPassWord,
-          code: this.data.registerCode
-        })
-      }).then(function (response) {
-        return response.json();
-      }).then(function (res) {
-        if (res.err === 0) {
-          toast('注册成功!');
-          owo.go('/view-loginContent=login');
-        } else {
-          toast("\u6CE8\u518C\u5931\u8D25: " + res.message);
-        }
-      });
-    },
-    "sendSMS": function sendSMS() {
-      if (!this.data.registerPhone) {
-        alert('手机号码不能为空!');
-        return;
-      }
-
-      fetch("http://going.run/userServer?route=sendSMS", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          phone: this.data.registerPhone
-        })
-      }).then(function (response) {
-        return response.json();
-      }).then(function (res) {
-        if (res.err === 0) {
-          toast('短信已发送!');
-        } else {
-          toast("\u77ED\u4FE1\u53D1\u9001\u5931\u8D25: " + res.message);
-        }
-      });
-    },
-    "view": {
-      "loginContent": [{
-        "_name": "login",
-        "_inherit": true
-      }, {
-        "_name": "register",
-        "_inherit": true
-      }]
-    }
-  },
-  "page": {
-    "data": {
-      "activeIndex": 0,
-      "mockData": [{
-        "name": "表格1",
-        "data": [{
-          "name": "初级",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "人保三级",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "人保四级",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "新版证书",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "河北保安员三级",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "安监员",
-          "value": [0, 0, 0, 0, 0, 0]
-        }]
-      }, {
-        "name": "表格2",
-        "data": [{
-          "name": "初级2",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "人保三级2",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "人保四级2",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "新版证书",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "河北保安员三级",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "安监员",
-          "value": [0, 0, 0, 0, 0, 0]
-        }]
-      }],
-      "timer": null,
-      "toTemp": ""
-    },
-    "show": function show() {
-      var _this = this;
-
-      if (!owo.state.userInfo) {
-        setTimeout(function () {
           owo.go('login');
-        }, 100);
-        return;
-      }
+          owo.tool.toast(res.message);
+        }
+      });
+    } // 模块 page 的script代码
 
-      this.clearData();
 
-      if (owo.state.userInfo.username == '苏州斯百特教育') {
-        this.query('.admin').style.display = 'inline';
+    owo.event.login = function() {
+      owo.script.page.createdTable(0);
+    }; // 模块 user 的script代码
+
+
+    function changeP(name, event) {
+      var isChecked = event.target.checked;
+      var powerName = event.target.value;
+
+      if (isChecked) {
+        owo.state.userInfo.sub[name].power[powerName] = true;
       } else {
-        this.query('.admin').style.display = 'none';
+        owo.state.userInfo.sub[name].power[powerName] = false;
       }
 
-      setTimeout(function () {
-        _this.createdTab(owo.state.userInfo.data);
-      }, 100);
-    },
-    "deleteItem": function deleteItem(index) {
-      var _this2 = this;
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
 
-      console.log(owo.state.userInfo.data[this.data.activeIndex].data);
-      delete owo.state.userInfo.data[this.data.activeIndex].data[index];
-      setTimeout(function () {
-        _this2.createdTable(_this2.data.activeIndex);
-      }, 100);
-      saveUserInfo();
-    },
-    "deleteItem2": function deleteItem2(key) {
-      var _this3 = this;
+    function changePW(name, event) {
+      owo.state.userInfo.sub[name].password = event.target.value;
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
 
-      var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+    function changePN(name, event) {
+      owo.state.userInfo.sub[event.target.value] = owo.state.userInfo.sub[name];
+      delete owo.state.userInfo.sub[name];
+      console.log(owo.state.userInfo.sub);
+      saveUserSub(owo.state.userInfo.sub);
+    }
 
-      for (var _index = 0; _index < activeData.length; _index++) {
-        if (activeData[_index]) delete owo.state.userInfo.data[this.data.activeIndex].data[_index].value[key];
-      }
+    owo.script = {
+      "login": {
+        "data": {
+          "registerusername": "",
+          "registerPassWord": "",
+          "registerPassWordR": "",
+          "registerPhone": "",
+          "registerCode": "",
+          "username": "",
+          "password": "",
+          "toast": null,
+          "session": null
+        },
+        "created": function created() {
+          if (owo.tool.toast) toast = owo.tool.toast;
+          else toast = alert;
+        },
+        "login": function login() {
+          var getUrl = "http://going.run/userServer?route=login";
 
-      this.clearData();
-      setTimeout(function () {
-        _this3.createdTable(_this3.data.activeIndex);
-      }, 100);
-      saveUserInfo();
-    },
-    "createdTab": function createdTab(data) {
-      var _this4 = this;
-
-      var tabHTML = "";
-      var ind = 0; // 移交到HTML
-
-      this.data.toTemp = '<select>';
-      data.forEach(function (element) {
-        if (element) {
-          tabHTML += "<div class=\"tab-bar-item\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
-          _this4.data.toTemp += "<option value=\"" + element.name + "\">" + element.name + "</option>";
-        }
-
-        ind++;
-      });
-      this.data.toTemp += '</select>'; // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
-
-      this.query('.tab-bar').innerHTML = tabHTML;
-      this.createdTable(0);
-      setTimeout(function () {
-        _this4.handleEvent(_this4, _this4.query('.tab-bar'));
-      }, 100);
-    },
-    "createdTable": function createdTable(ind) {
-      var _this5 = this;
-
-      this.data.activeIndex = ind;
-      ind = parseInt(ind);
-      var data = owo.state.userInfo.data[ind].data;
-      this.queryAll('.tab-bar-item').forEach(function (element) {
-        element.classList.remove('active');
-      });
-      this.queryAll('.tab-bar-item')[ind].classList.add('active');
-      var newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>';
-      var ind2 = 0;
-      data.forEach(function (item) {
-        if (item) {
-          newHtml += "<th o-mouseout=\"changeTitle(" + ind2 + ")\">" + item.name + "</th>";
-        }
-
-        ind2++;
-      });
-      newHtml += "<td class=\"tool\">\u79FB\u4EA4\u5230</td><td class=\"tool2\">\u5220\u9664</td></tr>"; // 获取最大的表项
-
-      console.log(data);
-      var lineNumber = data.length;
-      var rowNumber = 0;
-      data.forEach(function (element) {
-        if (element) {
-          if (element.value.length > rowNumber) rowNumber = element.value.length;
-        }
-      });
-
-      for (var _index2 = 0; _index2 < rowNumber; _index2++) {
-        var _temp = data[_index2] ? data[_index2].value : [];
-
-        newHtml += "<tr>";
-
-        for (var index2 = 0; index2 < lineNumber; index2++) {
-          var element = _temp[_index2];
-
-          if (data[index2] && data[index2].value) {
-            var value = data[index2].value[_index2] == undefined ? '' : data[index2].value[_index2];
-            newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index2 + ")\">" + value + "</td>";
+          if (this.data.username !== '苏州斯百特教育') {
+            getUrl = "http://going.run/userServer?route=loginSub";
           }
-        }
 
-        newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><div class=\"tool-td\"><img src=\"./static/resource/fuzhi.svg\" o-tap=\"fuzhi(" + _index2 + ")\" class=\"qiuhe\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"><img src=\"./static/resource/up.svg\" o-tap=\"up(" + _index2 + ")\" class=\"up\"><img src=\"./static/resource/down.svg\" o-tap=\"down(" + _index2 + ")\" class=\"down\"></div></td></tr>";
-      }
+          fetch(getUrl, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              type: appType,
+              username: '苏州斯百特教育',
+              subname: this.data.username,
+              password: this.data.password
+            })
+          }).then(function(response) {
+            return response.json();
+          }).then(function(res) {
+            console.log(res);
 
-      newHtml += "<tr class=\"delete-bar\">";
+            if (res.err === 0) {
+              toast('登陆成功'); // do something
 
-      for (var _index3 = 0; _index3 < lineNumber; _index3++) {
-        var _element = temp[index];
+              owo.state.userInfo = res.data; // localStorage.setItem('owoUserInfo_' + appType, JSON.stringify(res.data))
 
-        if (data[_index3] && data[_index3].value) {
-          var _value = data[_index3].value[index] == undefined ? '' : data[_index3].value[index];
-
-          newHtml += "<td><div class=\"tool-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"><img src=\"./static/resource/qiuhe.svg\" o-tap=\"qiuhe(" + _index3 + ")\" class=\"qiuhe\"></div></td>";
-        }
-      }
-
-      newHtml += "<td></td></tr>";
-      newHtml += "</table>";
-      this.query('.table-box').innerHTML = newHtml;
-      setTimeout(function () {
-        _this5.handleEvent(_this5, _this5.query('.table-box'));
-      }, 100);
-    },
-    "saveData": function saveData(key, name, index) {
-      if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
-        owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
-        saveUserInfo();
-      }
-    },
-    "addline": function addline() {
-      var temp = owo.state.userInfo.data[this.data.activeIndex];
-      temp.data.push({
-        "name": "新增项",
-        "value": Array(temp.row)
-      }); // console.log(owo.state.userInfo.data[this.data.activeIndex])
-
-      this.createdTable(this.data.activeIndex);
-      saveUserInfo();
-    },
-    "addline2": function addline2() {
-      var temp = owo.state.userInfo.data[this.data.activeIndex].data;
-      console.log(owo.state.userInfo.data[this.data.activeIndex]);
-
-      if (!temp[0].value) {
-        owo.tool.toast('请先增加列项!');
-        return;
-      }
-
-      temp[0].value.push('');
-      this.createdTable(this.data.activeIndex);
-      saveUserInfo();
-    },
-    "saveTab": function saveTab(ind) {
-      owo.state.userInfo.data[ind].name = this.$target.innerText;
-      this.createdTable(this.data.activeIndex);
-    },
-    "changeTitle": function changeTitle(ind) {
-      owo.state.userInfo.data[this.data.activeIndex].data[ind].name = this.$target.innerText;
-      this.createdTable(this.data.activeIndex);
-      saveUserInfo();
-    },
-    "addTable": function addTable() {
-      owo.state.userInfo.data.push({
-        name: "新建表格",
-        data: [{
-          "name": "表项1",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "表项2",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "表项3",
-          "value": [0, 0, 0, 0, 0, 0]
-        }]
-      });
-      this.createdTab(owo.state.userInfo.data);
-    },
-    "stopAutoGet": function stopAutoGet() {
-      window.clearInterval(this.data.timer);
-    },
-    "startAutoGet": function startAutoGet() {
-      window.clearInterval(this.data.timer);
-      this.data.timer = setInterval(function () {
-        fetch("http://going.run/userServer?route=loginSession", {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            type: appType,
-            username: owo.state.userInfo.username,
-            session: owo.state.userInfo.session
-          })
-        }).then(function (response) {
-          return response.json();
-        }).then(function (res) {
-          console.log(res);
-
-          if (res.err === 0) {} else {
-            owo.go('login');
-            owo.tool.toast(res.message);
-          }
-        });
-      }, 5000);
-    },
-    "clearData": function clearData() {
-      var temp = [];
-      owo.state.userInfo.data.forEach(function (element) {
-        if (element) {
-          var temp2 = [];
-          element.data.forEach(function (element2) {
-            if (element2 !== null && element2 !== undefined) {
-              var temp3 = [];
-              element2.value.forEach(function (element3) {
-                if (element3 !== null && element3 !== undefined) {
-                  temp3.push(element3);
-                }
-              });
-              element2.value = temp3;
-              temp2.push(element2);
+              setTimeout(function() {
+                owo.go('page');
+              }, 0);
+            } else {
+              toast(res.message);
             }
           });
-          element.data = temp2;
-          temp.push(element);
+        },
+        "register": function register() {
+          if (!this.data.registerusername) {
+            toast('用户名不能为空哦!');
+            return;
+          }
+
+          if (!this.data.registerPassWord) {
+            toast('密码不能为空哦!');
+            return;
+          }
+
+          if (!this.data.registerPassWordR) {
+            toast('重复密码不能为空哦!');
+            return;
+          }
+
+          if (!this.data.registerPhone) {
+            toast('手机号码不能为空!');
+            return;
+          }
+
+          if (this.data.registerPassWord !== this.data.registerPassWordR) {
+            toast('两次输入的密码不一致哦!');
+            return;
+          }
+
+          fetch("http://going.run/userServer?route=register", {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              phone: this.data.registerPhone,
+              username: this.data.registerusername,
+              password: this.data.registerPassWord,
+              code: this.data.registerCode
+            })
+          }).then(function(response) {
+            return response.json();
+          }).then(function(res) {
+            if (res.err === 0) {
+              toast('注册成功!');
+              owo.go('/view-loginContent=login');
+            } else {
+              toast("\u6CE8\u518C\u5931\u8D25: " + res.message);
+            }
+          });
+        },
+        "sendSMS": function sendSMS() {
+          if (!this.data.registerPhone) {
+            alert('手机号码不能为空!');
+            return;
+          }
+
+          fetch("http://going.run/userServer?route=sendSMS", {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              phone: this.data.registerPhone
+            })
+          }).then(function(response) {
+            return response.json();
+          }).then(function(res) {
+            if (res.err === 0) {
+              toast('短信已发送!');
+            } else {
+              toast("\u77ED\u4FE1\u53D1\u9001\u5931\u8D25: " + res.message);
+            }
+          });
+        },
+        "view": {
+          "loginContent": [{
+            "_name": "login",
+            "_inherit": true
+          }, {
+            "_name": "register",
+            "_inherit": true
+          }]
         }
-      });
-      owo.state.userInfo.data = temp;
-    },
-    "goto": function goto(ind) {
-      var _this6 = this;
+      },
+      "page": {
+        "data": {
+          "activeIndex": 0,
+          "mockData": [{
+            "name": "表格1",
+            "data": [{
+              "name": "初级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保四级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "新版证书",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "河北保安员三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "安监员",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          }, {
+            "name": "表格2",
+            "data": [{
+              "name": "初级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保三级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "人保四级2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "新版证书",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "河北保安员三级",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "安监员",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          }],
+          "timer": null,
+          "toTemp": ""
+        },
+        "show": function show() {
+          var _this = this;
 
-      console.log(this.$target);
-      var index = this.$target.selectedIndex;
-      var value = this.$target.options[index].value;
+          if (!owo.state.userInfo) {
+            setTimeout(function() {
+              owo.go('login');
+            }, 100);
+            return;
+          }
 
-      if (window.confirm("\u4F60\u786E\u5B9A\u8981\u79FB\u4EA4\u5230 " + value + " \u5417\uFF1F")) {
-        var indTemp = 0;
-        owo.state.userInfo.data[this.data.activeIndex].data.forEach(function (element) {
-          if (element) {
-            if (owo.state.userInfo.data[index].data[indTemp]) {
-              owo.state.userInfo.data[index].data[indTemp].value.push(element.value[ind]);
+          this.clearData();
+
+          if (owo.state.userInfo.username == '苏州斯百特教育') {
+            this.query('.admin').style.display = 'inline';
+          } else {
+            this.query('.admin').style.display = 'none';
+          }
+
+          setTimeout(function() {
+            _this.createdTab(owo.state.userInfo.data);
+          }, 100);
+        },
+        "deleteItem": function deleteItem(index) {
+          var _this2 = this;
+
+          console.log(owo.state.userInfo.data[this.data.activeIndex].data);
+          delete owo.state.userInfo.data[this.data.activeIndex].data[index];
+          setTimeout(function() {
+            _this2.createdTable(_this2.data.activeIndex);
+          }, 100);
+          saveUserInfo();
+        },
+        "deleteItem2": function deleteItem2(key) {
+          var _this3 = this;
+
+          var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+
+          for (var _index = 0; _index < activeData.length; _index++) {
+            if (activeData[_index]) delete owo.state.userInfo.data[this.data.activeIndex].data[_index].value[key];
+          }
+
+          this.clearData();
+          setTimeout(function() {
+            _this3.createdTable(_this3.data.activeIndex);
+          }, 100);
+          saveUserInfo();
+        },
+        "createdTab": function createdTab(data) {
+          var _this4 = this;
+
+          var tabHTML = "";
+          var ind = 0; // 移交到HTML
+
+          this.data.toTemp = '<select>';
+          data.forEach(function(element) {
+            if (element) {
+              tabHTML += "<div class=\"tab-bar-item\" o-tap=\"createdTable(" + ind + ")\">" + element.name + "</div>";
+              _this4.data.toTemp += "<option value=\"" + element.name + "\">" + element.name + "</option>";
             }
 
-            delete element.value[ind];
+            ind++;
+          });
+          this.data.toTemp += '</select>'; // tabHTML += `<div class="tab-bar-item" o-tap="addTable">+</div>`
+
+          this.query('.tab-bar').innerHTML = tabHTML;
+          this.createdTable(0);
+          setTimeout(function() {
+            _this4.handleEvent(_this4, _this4.query('.tab-bar'));
+          }, 100);
+        },
+        "createdTable": function createdTable(ind) {
+          var _this5 = this;
+
+          this.data.activeIndex = ind;
+          ind = parseInt(ind);
+          var data = owo.state.userInfo.data[ind].data;
+          this.queryAll('.tab-bar-item').forEach(function(element) {
+            element.classList.remove('active');
+          });
+          this.queryAll('.tab-bar-item')[ind].classList.add('active');
+          var newHtml = '<img class="add-line" o-tap="addline" src="./static/resource/add.svg"><img class="add-line2" o-tap="addline2" src="./static/resource/add.svg"><table border="0" contenteditable="true"><tr>';
+          var ind2 = 0;
+          data.forEach(function(item) {
+            if (item) {
+              newHtml += "<th o-mouseout=\"changeTitle(" + ind2 + ")\">" + item.name + "</th>";
+            }
+
+            ind2++;
+          });
+          newHtml += "<td class=\"tool\">\u79FB\u4EA4\u5230</td><td class=\"tool2\">\u5220\u9664</td></tr>"; // 获取最大的表项
+
+          console.log(data);
+          var lineNumber = data.length;
+          var rowNumber = 0;
+          data.forEach(function(element) {
+            if (element) {
+              if (element.value.length > rowNumber) rowNumber = element.value.length;
+            }
+          });
+
+          for (var _index2 = 0; _index2 < rowNumber; _index2++) {
+            var _temp = data[_index2] ? data[_index2].value : [];
+
+            newHtml += "<tr>";
+
+            for (var index2 = 0; index2 < lineNumber; index2++) {
+              var element = _temp[_index2];
+
+              if (data[index2] && data[index2].value) {
+                var value = data[index2].value[_index2] == undefined ? '' : data[index2].value[_index2];
+                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index2 + ")\">" + value + "</td>";
+              }
+            }
+
+            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><div class=\"tool-td\"><img src=\"./static/resource/fuzhi.svg\" o-tap=\"fuzhi(" + _index2 + ")\" class=\"qiuhe\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"><img src=\"./static/resource/up.svg\" o-tap=\"up(" + _index2 + ")\" class=\"up\"><img src=\"./static/resource/down.svg\" o-tap=\"down(" + _index2 + ")\" class=\"down\"></div></td></tr>";
           }
 
-          indTemp++;
-        });
-        console.log(index);
-        this.clearData();
-        setTimeout(function () {
-          _this6.createdTable(_this6.data.activeIndex);
-        }, 100);
-      }
-    },
-    "qiuhe": function qiuhe(index) {
-      var list = owo.state.userInfo.data[this.data.activeIndex].data[index];
-      var he = 0;
-      console.log(list.value);
-      list.value.forEach(function (element) {
-        if (parseFloat(element)) he += parseFloat(element);
-      });
-      alert("\u603B\u6570\u4E3A: " + he);
-    },
-    "fuzhi": function fuzhi(key) {
-      var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
-      var arr = [];
+          newHtml += "<tr class=\"delete-bar\">";
 
-      for (var _index4 = 0; _index4 < activeData.length; _index4++) {
-        if (activeData[_index4]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[_index4].value[key]);
-      }
+          for (var _index3 = 0; _index3 < lineNumber; _index3++) {
+            var _element = temp[index];
 
-      copyText(arr.join(' '));
-      owo.tool.toast('复制成功!');
-    },
-    "up": function up(index) {
-      index = parseInt(index);
+            if (data[_index3] && data[_index3].value) {
+              var _value = data[_index3].value[index] == undefined ? '' : data[_index3].value[index];
 
-      if (index > 0) {
-        this.change(index, index - 1);
-      }
-    },
-    "down": function down(index) {
-      index = parseInt(index);
-      this.change(index, index + 1);
-    },
-    "change": function change(oldindex, newindex) {
-      var _this7 = this;
-
-      var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
-
-      for (var _index5 = 0; _index5 < activeData.length; _index5++) {
-        var _temp2 = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex];
-        owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex] = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex];
-        owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex] = _temp2;
-      }
-
-      this.clearData();
-      setTimeout(function () {
-        _this7.createdTable(_this7.data.activeIndex);
-      }, 100);
-      saveUserInfo();
-    }
-  },
-  "user": {
-    "show": function show() {
-      var _this8 = this;
-
-      if (!owo.state.userInfo) {
-        setTimeout(function () {
-          owo.go('login');
-        }, 100);
-        return;
-      }
-
-      setTimeout(function () {
-        var newHtml = '<table border="0"><tr><th></th>';
-        console.log(owo.state.userInfo.data);
-        owo.state.userInfo.data.forEach(function (item) {
-          if (item) {
-            newHtml += "<th>" + item.name + "</th>";
+              newHtml += "<td><div class=\"tool-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"><img src=\"./static/resource/qiuhe.svg\" o-tap=\"qiuhe(" + _index3 + ")\" class=\"qiuhe\"></div></td>";
+            }
           }
-        });
-        newHtml += "</tr>";
-        var sub = owo.state.userInfo.sub;
 
-        var _loop = function _loop(key) {
-          if (Object.hasOwnProperty.call(sub, key)) {
-            var element = sub[key];
-            newHtml += "<tr><th>" + key + "</th>";
-            owo.state.userInfo.data.forEach(function (item) {
-              if (item) {
-                if (element.power[item.name]) {
-                  newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\" checked=\"true\"/></th>";
-                } else {
-                  newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\"/></th>";
+          newHtml += "<td></td></tr>";
+          newHtml += "</table>";
+          this.query('.table-box').innerHTML = newHtml;
+          setTimeout(function() {
+            _this5.handleEvent(_this5, _this5.query('.table-box'));
+          }, 100);
+        },
+        "saveData": function saveData(key, name, index) {
+          if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
+            owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
+            saveUserInfo();
+          }
+        },
+        "addline": function addline() {
+          var temp = owo.state.userInfo.data[this.data.activeIndex];
+          temp.data.push({
+            "name": "新增项",
+            "value": Array(temp.row)
+          }); // console.log(owo.state.userInfo.data[this.data.activeIndex])
+
+          this.createdTable(this.data.activeIndex);
+          saveUserInfo();
+        },
+        "addline2": function addline2() {
+          var temp = owo.state.userInfo.data[this.data.activeIndex].data;
+          console.log(owo.state.userInfo.data[this.data.activeIndex]);
+
+          if (!temp[0].value) {
+            owo.tool.toast('请先增加列项!');
+            return;
+          }
+
+          temp[0].value.push('');
+          this.createdTable(this.data.activeIndex);
+          saveUserInfo();
+        },
+        "saveTab": function saveTab(ind) {
+          owo.state.userInfo.data[ind].name = this.$target.innerText;
+          this.createdTable(this.data.activeIndex);
+        },
+        "changeTitle": function changeTitle(ind) {
+          owo.state.userInfo.data[this.data.activeIndex].data[ind].name = this.$target.innerText;
+          this.createdTable(this.data.activeIndex);
+          saveUserInfo();
+        },
+        "addTable": function addTable() {
+          owo.state.userInfo.data.push({
+            name: "新建表格",
+            data: [{
+              "name": "表项1",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项3",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          });
+          this.createdTab(owo.state.userInfo.data);
+        },
+        "stopAutoGet": function stopAutoGet() {
+          window.clearInterval(this.data.timer);
+        },
+        "startAutoGet": function startAutoGet() {
+          window.clearInterval(this.data.timer);
+          this.data.timer = setInterval(function() {
+            fetch("http://going.run/userServer?route=loginSession", {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                type: appType,
+                username: owo.state.userInfo.username,
+                session: owo.state.userInfo.session
+              })
+            }).then(function(response) {
+              return response.json();
+            }).then(function(res) {
+              console.log(res);
+
+              if (res.err === 0) {} else {
+                owo.go('login');
+                owo.tool.toast(res.message);
+              }
+            });
+          }, 5000);
+        },
+        "clearData": function clearData() {
+          var temp = [];
+          owo.state.userInfo.data.forEach(function(element) {
+            if (element) {
+              var temp2 = [];
+              element.data.forEach(function(element2) {
+                if (element2 !== null && element2 !== undefined) {
+                  var temp3 = [];
+                  element2.value.forEach(function(element3) {
+                    if (element3 !== null && element3 !== undefined) {
+                      temp3.push(element3);
+                    }
+                  });
+                  element2.value = temp3;
+                  temp2.push(element2);
                 }
+              });
+              element.data = temp2;
+              temp.push(element);
+            }
+          });
+          owo.state.userInfo.data = temp;
+        },
+        "goto": function goto(ind) {
+          var _this6 = this;
+
+          console.log(this.$target);
+          var index = this.$target.selectedIndex;
+          var value = this.$target.options[index].value;
+
+          if (window.confirm("\u4F60\u786E\u5B9A\u8981\u79FB\u4EA4\u5230 " + value + " \u5417\uFF1F")) {
+            var indTemp = 0;
+            owo.state.userInfo.data[this.data.activeIndex].data.forEach(function(element) {
+              if (element) {
+                if (owo.state.userInfo.data[index].data[indTemp]) {
+                  owo.state.userInfo.data[index].data[indTemp].value.push(element.value[ind]);
+                }
+
+                delete element.value[ind];
+              }
+
+              indTemp++;
+            });
+            console.log(index);
+            this.clearData();
+            setTimeout(function() {
+              _this6.createdTable(_this6.data.activeIndex);
+            }, 100);
+          }
+        },
+        "qiuhe": function qiuhe(index) {
+          var list = owo.state.userInfo.data[this.data.activeIndex].data[index];
+          var he = 0;
+          console.log(list.value);
+          list.value.forEach(function(element) {
+            if (parseFloat(element)) he += parseFloat(element);
+          });
+          alert("\u603B\u6570\u4E3A: " + he);
+        },
+        "fuzhi": function fuzhi(key) {
+          var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+          var arr = [];
+
+          for (var _index4 = 0; _index4 < activeData.length; _index4++) {
+            if (activeData[_index4]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[_index4].value[key]);
+          }
+
+          copyText(arr.join(' '));
+          owo.tool.toast('复制成功!');
+        },
+        "up": function up(index) {
+          index = parseInt(index);
+
+          if (index > 0) {
+            this.change(index, index - 1);
+          }
+        },
+        "down": function down(index) {
+          index = parseInt(index);
+          this.change(index, index + 1);
+        },
+        "change": function change(oldindex, newindex) {
+          var _this7 = this;
+
+          var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
+
+          for (var _index5 = 0; _index5 < activeData.length; _index5++) {
+            var _temp2 = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex];
+            owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex] = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex];
+            owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex] = _temp2;
+          }
+
+          this.clearData();
+          setTimeout(function() {
+            _this7.createdTable(_this7.data.activeIndex);
+          }, 100);
+          saveUserInfo();
+        }
+      },
+      "user": {
+        "show": function show() {
+          var _this8 = this;
+
+          if (!owo.state.userInfo) {
+            setTimeout(function() {
+              owo.go('login');
+            }, 100);
+            return;
+          }
+
+          setTimeout(function() {
+            var newHtml = '<table border="0"><tr><th></th>';
+            console.log(owo.state.userInfo.data);
+            owo.state.userInfo.data.forEach(function(item) {
+              if (item) {
+                newHtml += "<th>" + item.name + "</th>";
               }
             });
             newHtml += "</tr>";
-          }
-        };
+            var sub = owo.state.userInfo.sub;
 
-        for (var key in sub) {
-          _loop(key);
+            var _loop = function _loop(key) {
+              if (Object.hasOwnProperty.call(sub, key)) {
+                var element = sub[key];
+                newHtml += "<tr><th>" + key + "</th>";
+                owo.state.userInfo.data.forEach(function(item) {
+                  if (item) {
+                    if (element.power[item.name]) {
+                      newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\" checked=\"true\"/></th>";
+                    } else {
+                      newHtml += "<th><input type=\"checkbox\" name=\"category\" onchange=\"changeP('" + key + "', event)\" value=\"" + item.name + "\"/></th>";
+                    }
+                  }
+                });
+                newHtml += "</tr>";
+              }
+            };
+
+            for (var key in sub) {
+              _loop(key);
+            }
+
+            newHtml += "</table>";
+            _this8.query('.table-box').innerHTML = newHtml;
+          }, 100);
+        },
+        "addTable": function addTable() {
+          var _this9 = this;
+
+          owo.state.userInfo.data.push({
+            name: "新建表格",
+            data: [{
+              "name": "表项1",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项2",
+              "value": [0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "表项3",
+              "value": [0, 0, 0, 0, 0, 0]
+            }]
+          });
+          saveUserInfo();
+          setTimeout(function() {
+            _this9.show();
+          }, 100);
+        },
+        "deleteTable": function deleteTable(key) {
+          var _this10 = this;
+
+          delete owo.state.userInfo.data[key];
+          saveUserInfo();
+          setTimeout(function() {
+            _this10.show();
+
+            _this10.handleEvent(_this10, _this10.query('.table-box-2'));
+          }, 100);
+        },
+        "copyTable": function copyTable(key) {
+          var _this11 = this;
+
+          owo.state.userInfo.data.push(owo.state.userInfo.data[key]);
+          saveUserInfo();
+          setTimeout(function() {
+            _this11.show();
+
+            _this11.handleEvent(_this11, _this11.query('.table-box-2'));
+          }, 100);
+        },
+        "changePassword": function changePassword() {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+          var raw = JSON.stringify({
+            "type": "苏州斯百特教育",
+            "value": this.query('#newPass').value,
+            "username": "苏州斯百特教育",
+            "session": owo.state.userInfo.session
+          });
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          fetch("https://going.run/userServer?route=changePassword", requestOptions).then(function(response) {
+            return response.text();
+          }).then(function(result) {
+            return owo.tool.toast('密码修改成功!');
+          })["catch"](function(error) {
+            return console.log('error', error);
+          });
         }
+      }
+    };
+  </script>
 
-        newHtml += "</table>";
-        _this8.query('.table-box').innerHTML = newHtml;
-      }, 100);
-    },
-    "addTable": function addTable() {
-      var _this9 = this;
+  <script src="./static/js/main.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="https://cunchu.site/owo/script/jquery-1.11.1.min.js" type="text/javascript" charset="UTF-8"></script>
 
-      owo.state.userInfo.data.push({
-        name: "新建表格",
-        data: [{
-          "name": "表项1",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "表项2",
-          "value": [0, 0, 0, 0, 0, 0]
-        }, {
-          "name": "表项3",
-          "value": [0, 0, 0, 0, 0, 0]
-        }]
-      });
-      saveUserInfo();
-      setTimeout(function () {
-        _this9.show();
-      }, 100);
-    },
-    "deleteTable": function deleteTable(key) {
-      var _this10 = this;
+  <script src="./static/js/toast.js" type="text/javascript" charset="UTF-8"></script>
+</body>
 
-      delete owo.state.userInfo.data[key];
-      saveUserInfo();
-      setTimeout(function () {
-        _this10.show();
-
-        _this10.handleEvent(_this10, _this10.query('.table-box-2'));
-      }, 100);
-    },
-    "copyTable": function copyTable(key) {
-      var _this11 = this;
-
-      owo.state.userInfo.data.push(owo.state.userInfo.data[key]);
-      saveUserInfo();
-      setTimeout(function () {
-        _this11.show();
-
-        _this11.handleEvent(_this11, _this11.query('.table-box-2'));
-      }, 100);
-    },
-    "changePassword": function changePassword() {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      var raw = JSON.stringify({
-        "type": "苏州斯百特教育",
-        "value": this.query('#newPass').value,
-        "username": "苏州斯百特教育",
-        "session": owo.state.userInfo.session
-      });
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      fetch("https://going.run/userServer?route=changePassword", requestOptions).then(function (response) {
-        return response.text();
-      }).then(function (result) {
-        return owo.tool.toast('密码修改成功!');
-      })["catch"](function (error) {
-        return console.log('error', error);
-      });
-    }
-  }
-};
-</script>
-
-    <script src="./static/js/main.js" type="text/javascript"  charset="UTF-8"></script>
-
-    <script src="./static/js/toast.js" type="text/javascript"  charset="UTF-8"></script>
-  </body>
 </html>
