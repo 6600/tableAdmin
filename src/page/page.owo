@@ -140,7 +140,7 @@
             newHtml += `<td o-mouseout="saveData(${ind}, '${index2}', ${index})">${value}</td>`
           }
         }
-        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><div class="tool-td"><img src="@|fuzhi.svg|" o-tap="fuzhi(${index})" class="qiuhe"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"></div></td></tr>`
+        newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><div class="tool-td"><img src="@|fuzhi.svg|" o-tap="fuzhi(${index})" class="qiuhe"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"><img src="@|up.svg|" o-tap="up(${index})" class="up"><img src="@|down.svg|" o-tap="down(${index})" class="down"></div></td></tr>`
       }
       newHtml += `<tr class="delete-bar">`
       for (let index2 = 0; index2 < lineNumber; index2++) {
@@ -287,10 +287,32 @@
       let arr = []
       for (let index = 0; index < activeData.length; index++) {
         if (activeData[index]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[index].value[key])
-        
       }
       copyText(arr.join(' '))
       owo.tool.toast('复制成功!')
+    },
+    up: function (index) {
+      index = parseInt(index)
+      if (index > 0) {
+        this.change(index, index - 1)
+      }
+    },
+    down: function (index) {
+      index = parseInt(index)
+      this.change(index, index + 1)
+    },
+    change: function (oldindex, newindex) {
+      let activeData = owo.state.userInfo.data[this.data.activeIndex].data
+      for (let index = 0; index < activeData.length; index++) {
+        let temp = owo.state.userInfo.data[this.data.activeIndex].data[index].value[newindex]
+        owo.state.userInfo.data[this.data.activeIndex].data[index].value[newindex] = owo.state.userInfo.data[this.data.activeIndex].data[index].value[oldindex]
+        owo.state.userInfo.data[this.data.activeIndex].data[index].value[oldindex] = temp
+      }
+      this.clearData()
+      setTimeout(() => {
+        this.createdTable(this.data.activeIndex)
+      }, 100);
+      saveUserInfo()
     }
   }
 </script>
@@ -390,5 +412,11 @@ table select {
 }
 .delete {
   cursor: pointer;
+}
+.up {
+  height: 17px;
+}
+.down {
+  height: 24px;
 }
 </style>
