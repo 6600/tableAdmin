@@ -1,4 +1,4 @@
-// Mon Jan 25 2021 17:48:21 GMT+0800 (GMT+08:00)
+// Wed Feb 03 2021 22:03:05 GMT+0800 (GMT+08:00)
 var owo = {tool: {},state: {},event: {}};
 /* 方法合集 */
 var _owo = {
@@ -537,12 +537,11 @@ function handleEvent (moudleScript, enterDom) {
         tempNode.setAttribute('otemp-for', forValue)
         var temp = tempNode.outerHTML
         var value = forEle[key];
-        if (value == undefined) continue
         var tempCopy = temp
         // 获取模板插值
         var varList = _owo.cutStringArray(tempCopy, '{', '}')
         varList.forEach(element => {
-          const forValue = new Function('value', 'key', 'if (' + element + ') {return ' + element + '} else {return ""}')
+          var forValue = new Function('value', 'key', 'return ' + element)
           // 默认变量
           tempCopy = tempCopy.replace('{' + element + '}', forValue.apply(moudleScript, [value, key]))
         })
@@ -679,7 +678,6 @@ View.prototype.showName = function (name) {
   if (this._activeName == name) {
     oldRoute.$el.setAttribute('route-active', 'true')
     owo.state[viewName + '_changeing'] = false
-    owo.state.routeBusy = false
     return
   }
   // 根据index
@@ -827,15 +825,6 @@ owo.go = function (aniStr) {
   }
 }
 
-
-// 待修复 跳转返回没有了
-var toList = document.querySelectorAll('[go]')
-for (var index = 0; index < toList.length; index++) {
-  var element = toList[index]
-  element.onclick = function () {
-    owo.go(this.attributes['go'].value)
-  }
-}
 
 // 沙盒运行
 function shaheRun (code) {

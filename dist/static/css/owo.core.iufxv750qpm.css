@@ -374,6 +374,19 @@ li {
   align-items: center;
 }
 
+.home .zuoyi {
+  width: 16px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.home .youyi {
+  width: 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  transform: rotate(180deg);
+}
+
 .home table,
 .home tbody {
   outline: none;

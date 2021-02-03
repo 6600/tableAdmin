@@ -19,7 +19,7 @@
   <meta name="catalogs" content="{TAG_83943_TAG}" />
 
   <!-- 页面主样式文件 -->
-  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.uefab17jg5.css">
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.iufxv750qpm.css">
 
   <!-- 附属css文件 -->
   <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
@@ -46,11 +46,9 @@
         </div>
         <div class="button-box">
           <div class="button" o-tap="login" o-hover="radial-out">登录</div>
-          <div class="button" o-hover="radial-out" style=" background-color: burlywood;" go="/view-loginContent=register">注册</div>
         </div>
         <div class="tool-bar">
           <div class="left"></div>
-          <div class="right" go-route="">忘记密码</div>
         </div>
       </div>
       <div class="view-register" route="register">
@@ -145,7 +143,7 @@
   </div>
 
   <!-- 框架script文件 -->
-  <script src="./static/js/owo.core.uefab17jg5.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/owo.core.iufxv750qpm.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
     // 模块 login 的script代码
     var appType = '苏州斯百特教育财务平台'; // var userInfo = localStorage.getItem("owoUserInfo_" + appType)
@@ -443,8 +441,8 @@
 
           var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
 
-          for (var _index = 0; _index < activeData.length; _index++) {
-            if (activeData[_index]) delete owo.state.userInfo.data[this.data.activeIndex].data[_index].value[key];
+          for (var index = 0; index < activeData.length; index++) {
+            if (activeData[index]) delete owo.state.userInfo.data[this.data.activeIndex].data[index].value[key];
           }
 
           this.clearData();
@@ -506,32 +504,34 @@
             }
           });
 
-          for (var _index2 = 0; _index2 < rowNumber; _index2++) {
-            var _temp = data[_index2] ? data[_index2].value : [];
+          for (var index = 0; index < rowNumber; index++) {
+            var _temp = data[index] ? data[index].value : [];
 
             newHtml += "<tr>";
 
             for (var index2 = 0; index2 < lineNumber; index2++) {
-              var element = _temp[_index2];
+              var element = _temp[index];
 
               if (data[index2] && data[index2].value) {
-                var value = data[index2].value[_index2] == undefined ? '' : data[index2].value[_index2];
-                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + _index2 + ")\">" + value + "</td>";
+                var value = data[index2].value[index] == undefined ? '' : data[index2].value[index];
+                newHtml += "<td o-mouseout=\"saveData(" + ind + ", '" + index2 + "', " + index + ")\">" + value + "</td>";
               }
             }
 
-            newHtml += "<td class=\"tool\" o-change=\"goto(" + _index2 + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><div class=\"tool-td\"><img src=\"./static/resource/fuzhi.svg\" o-tap=\"fuzhi(" + _index2 + ")\" class=\"qiuhe\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + _index2 + ")\" class=\"delete\"><img src=\"./static/resource/up.svg\" o-tap=\"up(" + _index2 + ")\" class=\"up\"><img src=\"./static/resource/down.svg\" o-tap=\"down(" + _index2 + ")\" class=\"down\"></div></td></tr>";
+            newHtml += "<td class=\"tool\" o-change=\"goto(" + index + ")\">" + this.data.toTemp + "</td><td class=\"delete-td\"><div class=\"tool-td\"><img src=\"./static/resource/fuzhi.svg\" o-tap=\"fuzhi(" + index + ")\" class=\"qiuhe\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem2(" + index + ")\" class=\"delete\"><img src=\"./static/resource/up.svg\" o-tap=\"up(" + index + ")\" class=\"up\"><img src=\"./static/resource/down.svg\" o-tap=\"down(" + index + ")\" class=\"down\"></div></td></tr>";
           }
 
           newHtml += "<tr class=\"delete-bar\">";
 
-          for (var _index3 = 0; _index3 < lineNumber; _index3++) {
-            var _element = temp[index];
+          for (var _index = 0; _index < rowNumber; _index++) {
+            for (var _index2 = 0; _index2 < lineNumber; _index2++) {
+              var _element = temp[_index];
 
-            if (data[_index3] && data[_index3].value) {
-              var _value = data[_index3].value[index] == undefined ? '' : data[_index3].value[index];
+              if (data[_index2] && data[_index2].value) {
+                var _value = data[_index2].value[_index] == undefined ? '' : data[_index2].value[_index];
 
-              newHtml += "<td><div class=\"tool-td\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index3 + ")\" class=\"delete\"><img src=\"./static/resource/qiuhe.svg\" o-tap=\"qiuhe(" + _index3 + ")\" class=\"qiuhe\"></div></td>";
+                newHtml += "<td><div class=\"tool-td\"><img class=\"zuoyi\" o-tap=\"zuoyi(" + _index2 + ")\" src=\"./static/resource/zuoyi.svg\"><img src=\"./static/resource/delete.svg\" o-tap=\"deleteItem(" + _index2 + ")\" class=\"delete\"><img src=\"./static/resource/qiuhe.svg\" o-tap=\"qiuhe(" + _index2 + ")\" class=\"qiuhe\"><img class=\"youyi\" o-tap=\"youyi(" + _index2 + ")\" src=\"./static/resource/zuoyi.svg\"></div></td>";
+              }
             }
           }
 
@@ -546,6 +546,35 @@
           if (owo.state.userInfo.data[key].data[name].value[index] != this.$target.innerText) {
             owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText;
             saveUserInfo();
+          }
+        },
+        "zuoyi": function zuoyi(index) {
+          var _this6 = this;
+
+          if (owo.state.userInfo.data[this.data.activeIndex].data[index - 1]) {
+            var _temp2 = JSON.parse(JSON.stringify(owo.state.userInfo.data[this.data.activeIndex].data[index - 1]));
+
+            owo.state.userInfo.data[this.data.activeIndex].data[index - 1] = owo.state.userInfo.data[this.data.activeIndex].data[index];
+            owo.state.userInfo.data[this.data.activeIndex].data[index] = _temp2;
+          }
+
+          saveUserInfo();
+          setTimeout(function() {
+            _this6.createdTable(_this6.data.activeIndex);
+          }, 100);
+        },
+        "youyi": function youyi(index) {
+          var _this7 = this;
+
+          if (owo.state.userInfo.data[this.data.activeIndex].data[index + 1]) {
+            var _temp3 = JSON.parse(JSON.stringify(owo.state.userInfo.data[this.data.activeIndex].data[index + 1]));
+
+            owo.state.userInfo.data[this.data.activeIndex].data[index + 1] = owo.state.userInfo.data[this.data.activeIndex].data[index];
+            owo.state.userInfo.data[this.data.activeIndex].data[index] = _temp3;
+            saveUserInfo();
+            setTimeout(function() {
+              _this7.createdTable(_this7.data.activeIndex);
+            }, 100);
           }
         },
         "addline": function addline() {
@@ -648,7 +677,7 @@
           owo.state.userInfo.data = temp;
         },
         "goto": function goto(ind) {
-          var _this6 = this;
+          var _this8 = this;
 
           console.log(this.$target);
           var index = this.$target.selectedIndex;
@@ -670,7 +699,7 @@
             console.log(index);
             this.clearData();
             setTimeout(function() {
-              _this6.createdTable(_this6.data.activeIndex);
+              _this8.createdTable(_this8.data.activeIndex);
             }, 100);
           }
         },
@@ -687,8 +716,8 @@
           var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
           var arr = [];
 
-          for (var _index4 = 0; _index4 < activeData.length; _index4++) {
-            if (activeData[_index4]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[_index4].value[key]);
+          for (var index = 0; index < activeData.length; index++) {
+            if (activeData[index]) arr.push(owo.state.userInfo.data[this.data.activeIndex].data[index].value[key]);
           }
 
           copyText(arr.join(' '));
@@ -706,26 +735,26 @@
           this.change(index, index + 1);
         },
         "change": function change(oldindex, newindex) {
-          var _this7 = this;
+          var _this9 = this;
 
           var activeData = owo.state.userInfo.data[this.data.activeIndex].data;
 
-          for (var _index5 = 0; _index5 < activeData.length; _index5++) {
-            var _temp2 = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex];
-            owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[newindex] = owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex];
-            owo.state.userInfo.data[this.data.activeIndex].data[_index5].value[oldindex] = _temp2;
+          for (var index = 0; index < activeData.length; index++) {
+            var _temp4 = owo.state.userInfo.data[this.data.activeIndex].data[index].value[newindex];
+            owo.state.userInfo.data[this.data.activeIndex].data[index].value[newindex] = owo.state.userInfo.data[this.data.activeIndex].data[index].value[oldindex];
+            owo.state.userInfo.data[this.data.activeIndex].data[index].value[oldindex] = _temp4;
           }
 
           this.clearData();
           setTimeout(function() {
-            _this7.createdTable(_this7.data.activeIndex);
+            _this9.createdTable(_this9.data.activeIndex);
           }, 100);
           saveUserInfo();
         }
       },
       "user": {
         "show": function show() {
-          var _this8 = this;
+          var _this10 = this;
 
           if (!owo.state.userInfo) {
             setTimeout(function() {
@@ -767,11 +796,11 @@
             }
 
             newHtml += "</table>";
-            _this8.query('.table-box').innerHTML = newHtml;
+            _this10.query('.table-box').innerHTML = newHtml;
           }, 100);
         },
         "addTable": function addTable() {
-          var _this9 = this;
+          var _this11 = this;
 
           owo.state.userInfo.data.push({
             name: "新建表格",
@@ -788,29 +817,29 @@
           });
           saveUserInfo();
           setTimeout(function() {
-            _this9.show();
+            _this11.show();
           }, 100);
         },
         "deleteTable": function deleteTable(key) {
-          var _this10 = this;
+          var _this12 = this;
 
           delete owo.state.userInfo.data[key];
           saveUserInfo();
           setTimeout(function() {
-            _this10.show();
+            _this12.show();
 
-            _this10.handleEvent(_this10, _this10.query('.table-box-2'));
+            _this12.handleEvent(_this12, _this12.query('.table-box-2'));
           }, 100);
         },
         "copyTable": function copyTable(key) {
-          var _this11 = this;
+          var _this13 = this;
 
           owo.state.userInfo.data.push(owo.state.userInfo.data[key]);
           saveUserInfo();
           setTimeout(function() {
-            _this11.show();
+            _this13.show();
 
-            _this11.handleEvent(_this11, _this11.query('.table-box-2'));
+            _this13.handleEvent(_this13, _this13.query('.table-box-2'));
           }, 100);
         },
         "changePassword": function changePassword() {

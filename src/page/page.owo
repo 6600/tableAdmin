@@ -143,13 +143,16 @@
         newHtml += `<td class="tool" o-change="goto(${index})">${this.data.toTemp}</td><td class="delete-td"><div class="tool-td"><img src="@|fuzhi.svg|" o-tap="fuzhi(${index})" class="qiuhe"><img src="@|delete.svg|" o-tap="deleteItem2(${index})" class="delete"><img src="@|up.svg|" o-tap="up(${index})" class="up"><img src="@|down.svg|" o-tap="down(${index})" class="down"></div></td></tr>`
       }
       newHtml += `<tr class="delete-bar">`
-      for (let index2 = 0; index2 < lineNumber; index2++) {
-        const element = temp[index];
-        if (data[index2] && data[index2].value) {
-          const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
-          newHtml += `<td><div class="tool-td"><img src="@|delete.svg|" o-tap="deleteItem(${index2})" class="delete"><img src="@|qiuhe.svg|" o-tap="qiuhe(${index2})" class="qiuhe"></div></td>`
+      for (let index = 0; index < rowNumber; index++) {
+        for (let index2 = 0; index2 < lineNumber; index2++) {
+          const element = temp[index];
+          if (data[index2] && data[index2].value) {
+            const value = data[index2].value[index] == undefined ? '' : data[index2].value[index]
+            newHtml += `<td><div class="tool-td"><img class="zuoyi" o-tap="zuoyi(${index2})" src="@|zuoyi.svg|"><img src="@|delete.svg|" o-tap="deleteItem(${index2})" class="delete"><img src="@|qiuhe.svg|" o-tap="qiuhe(${index2})" class="qiuhe"><img class="youyi" o-tap="youyi(${index2})" src="@|zuoyi.svg|"></div></td>`
+          }
         }
       }
+      
       newHtml += `<td></td></tr>`
       newHtml += `</table>`
       this.query('.table-box').innerHTML = newHtml
@@ -162,6 +165,29 @@
         owo.state.userInfo.data[key].data[name].value[index] = this.$target.innerText
         saveUserInfo()
       }
+    },
+    zuoyi: function (index) {
+      if (owo.state.userInfo.data[this.data.activeIndex].data[index - 1]) {
+        const temp = JSON.parse(JSON.stringify(owo.state.userInfo.data[this.data.activeIndex].data[index - 1]))
+        owo.state.userInfo.data[this.data.activeIndex].data[index - 1] = owo.state.userInfo.data[this.data.activeIndex].data[index]
+        owo.state.userInfo.data[this.data.activeIndex].data[index] = temp
+      }
+      saveUserInfo()
+      setTimeout(() => {
+        this.createdTable(this.data.activeIndex)
+      }, 100);
+    },
+    youyi: function (index) {
+      if (owo.state.userInfo.data[this.data.activeIndex].data[index + 1]) {
+        const temp = JSON.parse(JSON.stringify(owo.state.userInfo.data[this.data.activeIndex].data[index + 1]))
+        owo.state.userInfo.data[this.data.activeIndex].data[index + 1] = owo.state.userInfo.data[this.data.activeIndex].data[index]
+        owo.state.userInfo.data[this.data.activeIndex].data[index] = temp
+        saveUserInfo()
+        setTimeout(() => {
+          this.createdTable(this.data.activeIndex)
+        }, 100);
+      }
+      
     },
     addline: function () {
       let temp = owo.state.userInfo.data[this.data.activeIndex]
@@ -398,6 +424,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.zuoyi {
+  width: 16px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.youyi {
+  width: 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  transform:rotate(180deg);
 }
 table, tbody {
   outline: none;
